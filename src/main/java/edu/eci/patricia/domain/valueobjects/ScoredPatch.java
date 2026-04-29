@@ -1,4 +1,4 @@
-package edu.eci.patricia.domain.model;
+package edu.eci.patricia.domain.valueobjects;
 
 
 import lombok.Getter;
