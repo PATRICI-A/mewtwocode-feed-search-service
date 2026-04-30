@@ -1,4 +1,4 @@
-package edu.eci.patricia.domain.model;
+package edu.eci.patricia.application.dto.response;
 
 import edu.eci.patricia.domain.model.enums.CampusZone;
 import edu.eci.patricia.domain.model.enums.PatchCategory;
@@ -10,30 +10,21 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Patch {
+@Builder
+public class PatchSummaryResponse {
     private UUID id;
     private String title;
     private String description;
     private PatchCategory category;
-    private String location;
     private CampusZone campusZone;
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
     private Integer capacity;
     private Integer currentCount;
     private PatchStatus status;
-    private UUID creatorId;
     private Boolean isPublic;
-    private LocalDateTime createdTime;
-
-    public boolean isFull() {
-        return this.currentCount >= this.capacity;
-    }
-
-    public boolean isOpen() {
-        return this.status == PatchStatus.OPEN;
-    }
+    private String creatorName;
+    private Float affinityScore;
+    private Boolean userIsMember;
 }

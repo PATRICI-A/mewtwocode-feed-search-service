@@ -1,5 +1,5 @@
 package edu.eci.patricia.domain.model.enums;
 
-public enum MembershipStatus{
-    ACTIVE,LEFT
+public enum MembershipStatus {
+    ACTIVE, LEFT, KICKED
 }
