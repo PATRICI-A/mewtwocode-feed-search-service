@@ -15,6 +15,7 @@ import java.util.UUID;
 
 public class SearchIndexEntity {
 
+    @Id
     @Column(name = "patch_id", nullable = false, updatable = false)
     private UUID patchId;
 

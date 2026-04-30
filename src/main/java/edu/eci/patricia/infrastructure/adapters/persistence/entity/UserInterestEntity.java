@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "patches", uniqueConstraints = {
+@Table(name = "user_interests", uniqueConstraints = {
         @UniqueConstraint(name = "uk_interest_user_tag",
         columnNames = {"user_id", "interest_tag"})
 })

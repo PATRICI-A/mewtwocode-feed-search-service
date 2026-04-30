@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 import java.time.LocalDateTime;
 
@@ -17,5 +18,7 @@ import java.time.LocalDateTime;
 
 public class RecommendationResult{
     private UUID userId;
+    private List<ScorePatch> scorePatches;
     private LocalDateTime generatedAt;
+    private boolean isFallback;
 }
