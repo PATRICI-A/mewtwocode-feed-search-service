@@ -29,6 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Dar permisos
+        run: chmod +x mvnw
+
       - name: Compilar
         run: ./mvnw compile -Djacoco.skip=true -q
 
