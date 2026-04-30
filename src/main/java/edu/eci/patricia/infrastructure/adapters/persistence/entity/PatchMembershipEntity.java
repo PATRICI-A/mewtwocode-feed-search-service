@@ -1,22 +1,21 @@
 package edu.eci.patricia.infrastructure.adapters.persistence.entity;
 
-import edu.eci.patricia.domain.model.enums.*;
+import edu.eci.patricia.domain.model.enums.MembershipStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "patch_memberships", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_membership_patch_user",
-                columnNames = {"patch_id", "user_id"})
+        @UniqueConstraint(name = "uk_membership_patch_user", columnNames = {"patch_id", "user_id"})
 })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class PatchMembershipEntity {
 
     @Id
@@ -36,5 +35,4 @@ public class PatchMembershipEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MembershipStatus status = MembershipStatus.ACTIVE;
-
 }

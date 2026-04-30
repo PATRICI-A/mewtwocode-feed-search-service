@@ -1,6 +1,7 @@
 package edu.eci.patricia.domain.ports.out;
 
 import edu.eci.patricia.domain.model.UserInterest;
+
 import java.util.List;
 import java.util.UUID;
 

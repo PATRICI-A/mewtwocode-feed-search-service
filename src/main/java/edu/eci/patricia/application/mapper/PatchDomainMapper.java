@@ -5,9 +5,9 @@ import edu.eci.patricia.domain.model.Patch;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PatchApplicationMapper{
+public class PatchDomainMapper {
 
-    public PatchSummaryResponse toResponse(Patch patch, boolean userIsMember, Float affinityScore){
+    public PatchSummaryResponse toResponse(Patch patch, boolean userIsMember, Float affinityScore) {
         return PatchSummaryResponse.builder()
                 .id(patch.getId())
                 .title(patch.getTitle())

@@ -1,9 +1,9 @@
-package edu.eci.patricia.infrastructure.adapters.persistence;
+package edu.eci.patricia.infrastructure.adapters.adapter;
 
 import edu.eci.patricia.domain.model.Patch;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
-import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchPersistenceMapper;
+import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchEntityMapper;
 import edu.eci.patricia.infrastructure.adapters.persistence.repository.PatchJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class PatchPersistenceAdapter implements PatchRepositoryPort {
+public class PatchRepositoryAdapter implements PatchRepositoryPort {
 
     private final PatchJpaRepository jpaRepository;
-    private final PatchPersistenceMapper mapper;
+    private final PatchEntityMapper mapper;
 
-    public PatchPersistenceAdapter(PatchJpaRepository jpaRepository, PatchPersistenceMapper mapper) {
+    public PatchRepositoryAdapter(PatchJpaRepository jpaRepository, PatchEntityMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }

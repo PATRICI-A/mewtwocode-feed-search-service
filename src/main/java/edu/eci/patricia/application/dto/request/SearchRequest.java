@@ -1,10 +1,11 @@
 package edu.eci.patricia.application.dto.request;
 
+import edu.eci.patricia.domain.model.enums.CampusZone;
 import edu.eci.patricia.domain.model.enums.PatchCategory;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
-import edu.eci.patricia.domain.model.enums.CampusZone;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
 @Getter
@@ -12,8 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class SearchRequest{
+public class SearchRequest {
     private String q;
     private PatchCategory category;
     private CampusZone campusZone;

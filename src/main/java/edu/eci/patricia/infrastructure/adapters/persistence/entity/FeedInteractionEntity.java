@@ -14,7 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class FeedInteractionEntity {
 
     @Id
@@ -34,5 +33,4 @@ public class FeedInteractionEntity {
 
     @Column(name = "interacted_at", nullable = false, updatable = false)
     private LocalDateTime interactedAt;
-
 }

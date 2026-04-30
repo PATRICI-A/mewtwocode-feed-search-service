@@ -9,7 +9,7 @@ import edu.eci.patricia.infrastructure.adapters.persistence.entity.UserInterestE
 import org.springframework.stereotype.Component;
 
 @Component
-public class PatchPersistenceMapper {
+public class PatchEntityMapper {
 
     public Patch toDomain(PatchEntity entity) {
         return Patch.builder()

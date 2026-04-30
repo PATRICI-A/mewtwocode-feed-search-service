@@ -1,8 +1,11 @@
 package edu.eci.patricia.infrastructure.adapters.persistence.entity;
 
-import edu.eci.patricia.domain.model.enums.*;
+import edu.eci.patricia.domain.model.enums.CampusZone;
+import edu.eci.patricia.domain.model.enums.PatchCategory;
+import edu.eci.patricia.domain.model.enums.PatchStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -13,7 +16,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class PatchEntity {
 
     @Id
@@ -64,22 +66,10 @@ public class PatchEntity {
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate(){
-        if (this.createdAt == null){
-            this.createdAt = LocalDateTime.now();
-        }
-
-        if (this.currentCount == null){
-            this.currentCount = 0;
-        }
-
-        if (this.status == null){
-            this.status = PatchStatus.OPEN;
-        }
-
-        if (this.isPublic == null){
-            this.isPublic = true;
-        }
+    protected void onCreate() {
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+        if (this.currentCount == null) this.currentCount = 0;
+        if (this.status == null) this.status = PatchStatus.OPEN;
+        if (this.isPublic == null) this.isPublic = true;
     }
-
 }

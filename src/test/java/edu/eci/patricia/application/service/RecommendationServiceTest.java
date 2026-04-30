@@ -177,8 +177,6 @@ class RecommendationServiceTest {
         assertThat(result.get(0).getReason()).contains("joined");
     }
 
-    // --- helpers ---
-
     private Patch buildPatch(UUID id, PatchCategory category) {
         return Patch.builder()
                 .id(id)

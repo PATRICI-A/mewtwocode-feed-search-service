@@ -1,8 +1,8 @@
-package edu.eci.patricia.infrastructure.adapters.persistence;
+package edu.eci.patricia.infrastructure.adapters.adapter;
 
 import edu.eci.patricia.domain.model.FeedInteraction;
 import edu.eci.patricia.domain.ports.out.FeedInteractionRepositoryPort;
-import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchPersistenceMapper;
+import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchEntityMapper;
 import edu.eci.patricia.infrastructure.adapters.persistence.repository.FeedInteractionJpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +12,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class FeedInteractionPersistenceAdapter implements FeedInteractionRepositoryPort {
+public class FeedInteractionRepositoryAdapter implements FeedInteractionRepositoryPort {
 
     private final FeedInteractionJpaRepository jpaRepository;
-    private final PatchPersistenceMapper mapper;
+    private final PatchEntityMapper mapper;
 
-    public FeedInteractionPersistenceAdapter(FeedInteractionJpaRepository jpaRepository, PatchPersistenceMapper mapper) {
+    public FeedInteractionRepositoryAdapter(FeedInteractionJpaRepository jpaRepository, PatchEntityMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;
     }

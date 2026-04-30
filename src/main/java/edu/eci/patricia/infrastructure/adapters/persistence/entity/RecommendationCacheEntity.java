@@ -2,6 +2,7 @@ package edu.eci.patricia.infrastructure.adapters.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class RecommendationCacheEntity {
 
     @Id

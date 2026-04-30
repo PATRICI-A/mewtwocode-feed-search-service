@@ -5,7 +5,7 @@ import edu.eci.patricia.domain.model.Patch;
 import edu.eci.patricia.domain.model.UserInterest;
 import edu.eci.patricia.domain.model.enums.InteractionType;
 import edu.eci.patricia.domain.model.enums.PatchCategory;
-import edu.eci.patricia.domain.ports.in.FeedUseCase;
+import edu.eci.patricia.domain.ports.in.GetRecommendationsPort;
 import edu.eci.patricia.domain.ports.out.FeedInteractionRepositoryPort;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
 import edu.eci.patricia.domain.ports.out.UserInterestRepositoryPort;
@@ -16,16 +16,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class RecommendationService implements FeedUseCase {
+public class RecommendationService implements GetRecommendationsPort {
 
     private static final int MAX_RECOMMENDATIONS = 10;
     private static final float INTEREST_TAG_SCORE   = 0.40f;
     private static final float JOIN_SCORE_PER_HIT   = 0.15f;
-    private static final float JOIN_SCORE_CAP       = 0.30f;
+    private static final float JOIN_SCORE_CAP        = 0.30f;
     private static final float VIEW_SCORE_PER_HIT   = 0.05f;
-    private static final float VIEW_SCORE_CAP       = 0.10f;
+    private static final float VIEW_SCORE_CAP        = 0.10f;
     private static final float SKIP_PENALTY_PER_HIT = 0.10f;
-    private static final float SKIP_PENALTY_CAP     = 0.20f;
+    private static final float SKIP_PENALTY_CAP      = 0.20f;
 
     private final PatchRepositoryPort patchRepository;
     private final UserInterestRepositoryPort interestRepository;
@@ -42,7 +42,7 @@ public class RecommendationService implements FeedUseCase {
     @Override
     public List<ScoredPatch> getRecommendations(UUID userId) {
 
-        // 1. Tags de interés del usuario en mayúsculas para comparar con el enum
+        // 1. Tags de interés del usuario
         Set<String> interestTags = interestRepository.findByUserId(userId).stream()
                 .map(UserInterest::getInterestingTag)
                 .map(String::toUpperCase)
@@ -52,20 +52,20 @@ public class RecommendationService implements FeedUseCase {
         List<FeedInteraction> interactions = interactionRepository.findByUserId(userId);
         Set<UUID> alreadyInteracted = interactionRepository.findInteractedPatchIds(userId);
 
-        // 3. Mapa patchId → categoría para saber la categoría de cada interacción pasada
+        // 3. Mapa patchId → categoría para contar interacciones por categoría
         Map<UUID, PatchCategory> categoryByPatchId = buildCategoryLookup(alreadyInteracted);
 
-        // 4. Conteo de interacciones por categoría
+        // 4. Conteo de interacciones por categoría y tipo
         Map<PatchCategory, Long> joinsByCategory = countByCategory(interactions, InteractionType.JOIN, categoryByPatchId);
         Map<PatchCategory, Long> viewsByCategory = countByCategory(interactions, InteractionType.VIEW, categoryByPatchId);
         Map<PatchCategory, Long> skipsByCategory = countByCategory(interactions, InteractionType.SKIP, categoryByPatchId);
 
-        // 5. Candidatos: patches abiertos, públicos, que el usuario no haya visto
+        // 5. Candidatos: patches abiertos y públicos que el usuario no ha visto
         List<Patch> candidates = patchRepository.findOpenPublicPatches().stream()
                 .filter(p -> !alreadyInteracted.contains(p.getId()))
                 .toList();
 
-        // 6. Puntuar, filtrar y ordenar
+        // 6. Puntuar, filtrar score > 0 y ordenar descendentemente
         return candidates.stream()
                 .map(p -> score(p, interestTags, joinsByCategory, viewsByCategory, skipsByCategory))
                 .filter(sp -> sp.getAffinityScore() > 0)
@@ -74,14 +74,12 @@ public class RecommendationService implements FeedUseCase {
                 .toList();
     }
 
-    // Carga las categorías de los patches con los que el usuario interactuó (evita N+1)
     private Map<UUID, PatchCategory> buildCategoryLookup(Set<UUID> patchIds) {
         if (patchIds.isEmpty()) return Collections.emptyMap();
         return patchRepository.findByIds(new ArrayList<>(patchIds)).stream()
                 .collect(Collectors.toMap(Patch::getId, Patch::getCategory));
     }
 
-    // Aplica el algoritmo de scoring a un patch candidato
     private ScoredPatch score(Patch patch,
                                Set<String> interestTags,
                                Map<PatchCategory, Long> joinsByCategory,
@@ -91,26 +89,22 @@ public class RecommendationService implements FeedUseCase {
         List<String> reasons = new ArrayList<>();
         PatchCategory category = patch.getCategory();
 
-        // Señal 1: el tag de interés del usuario coincide con la categoría
         if (interestTags.contains(category.name())) {
             score += INTEREST_TAG_SCORE;
             reasons.add("matches your interests");
         }
 
-        // Señal 2: el usuario ha hecho JOIN en esta categoría antes
         long joins = joinsByCategory.getOrDefault(category, 0L);
         if (joins > 0) {
             score += Math.min(joins * JOIN_SCORE_PER_HIT, JOIN_SCORE_CAP);
             reasons.add("similar to patches you've joined");
         }
 
-        // Señal 3: el usuario ha visto patches de esta categoría
         long views = viewsByCategory.getOrDefault(category, 0L);
         if (views > 0) {
             score += Math.min(views * VIEW_SCORE_PER_HIT, VIEW_SCORE_CAP);
         }
 
-        // Penalización: el usuario ha skipeado esta categoría
         long skips = skipsByCategory.getOrDefault(category, 0L);
         if (skips > 0) {
             score -= Math.min(skips * SKIP_PENALTY_PER_HIT, SKIP_PENALTY_CAP);
@@ -121,7 +115,7 @@ public class RecommendationService implements FeedUseCase {
                 : String.join(" and ", reasons);
 
         return ScoredPatch.builder()
-                .patchId(patch.getId())
+                .patch(patch)
                 .affinityScore(score)
                 .reason(reason)
                 .build();

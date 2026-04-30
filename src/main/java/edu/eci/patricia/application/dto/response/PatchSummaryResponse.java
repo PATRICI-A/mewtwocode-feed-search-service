@@ -1,10 +1,10 @@
 package edu.eci.patricia.application.dto.response;
 
+import edu.eci.patricia.domain.model.enums.CampusZone;
 import edu.eci.patricia.domain.model.enums.PatchCategory;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
-import edu.eci.patricia.domain.model.enums.CampusZone;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -13,8 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class PatchSummaryResponse{
+public class PatchSummaryResponse {
     private UUID id;
     private String title;
     private String description;
@@ -28,5 +27,4 @@ public class PatchSummaryResponse{
     private String creatorName;
     private Float affinityScore;
     private Boolean userIsMember;
-
 }

@@ -1,6 +1,7 @@
 package edu.eci.patricia.application.dto.response;
 
 import lombok.*;
+
 import java.util.UUID;
 
 @Getter
@@ -8,8 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class PatchRecommendationResponse{
+public class PatchRecommendationResponse {
     private UUID patchId;
     private PatchSummaryResponse patch;
     private Float affinityScore;
