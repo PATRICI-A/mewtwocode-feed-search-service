@@ -3,6 +3,7 @@ package edu.eci.patricia.infrastructure.adapters.adapter;
 import edu.eci.patricia.domain.model.Patch;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
+import edu.eci.patricia.infrastructure.adapters.persistence.entity.PatchEntity;
 import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchEntityMapper;
 import edu.eci.patricia.infrastructure.adapters.persistence.repository.PatchJpaRepository;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,23 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
     @Override
     public List<Patch> findByIds(List<UUID> ids) {
         return jpaRepository.findAllById(ids).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Patch> searchPatches(edu.eci.patricia.application.dto.request.SearchRequest request) {
+        // Implementation using JPA Specifications would be ideal here for dynamic filtering
+        // For now, let's use a simpler approach or implement the Specification
+        return jpaRepository.findAll().stream()
+                .filter(p -> request.getQ() == null || p.getTitle().toLowerCase().contains(request.getQ().toLowerCase()) 
+                        || p.getDescription().toLowerCase().contains(request.getQ().toLowerCase()))
+                .filter(p -> request.getCategory() == null || p.getCategory().equals(request.getCategory()))
+                .filter(p -> request.getCampusZone() == null || p.getCampusZone().equals(request.getCampusZone()))
+                .filter(p -> request.getStatus() == null || p.getStatus().equals(request.getStatus()))
+                .filter(p -> request.getDateFrom() == null || !p.getStartTime().toLocalDate().isBefore(request.getDateFrom()))
+                .filter(p -> request.getDateTo() == null || !p.getStartTime().toLocalDate().isAfter(request.getDateTo()))
+                .filter(p -> Boolean.TRUE.equals(p.getIsPublic()))
                 .map(mapper::toDomain)
                 .toList();
     }

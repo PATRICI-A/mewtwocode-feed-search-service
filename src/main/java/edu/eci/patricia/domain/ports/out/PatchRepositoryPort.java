@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface PatchRepositoryPort {
     List<Patch> findOpenPublicPatches();
     List<Patch> findByIds(List<UUID> ids);
+    List<Patch> searchPatches(edu.eci.patricia.application.dto.request.SearchRequest request);
 }
