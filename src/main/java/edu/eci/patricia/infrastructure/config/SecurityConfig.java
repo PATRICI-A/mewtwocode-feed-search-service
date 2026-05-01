@@ -16,7 +16,8 @@ public class SecurityConfig {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/api/v1/parches/search"
     };
 
     @Bean
@@ -26,8 +27,8 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(SWAGGER_PATHS).permitAll()
-                .anyRequest().authenticated())
-                .oauth2ResourceServer((oauth2 -> oauth2.jwt(jwt -> {})));
+                .anyRequest().authenticated());
+        // .oauth2ResourceServer((oauth2 -> oauth2.jwt(jwt -> {})));
         return http.build();
     }
 }
