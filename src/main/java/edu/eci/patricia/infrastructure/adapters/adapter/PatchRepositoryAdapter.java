@@ -8,30 +8,34 @@ import edu.eci.patricia.infrastructure.adapters.persistence.repository.PatchJpaR
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class PatchRepositoryAdapter implements PatchRepositoryPort {
 
     private final PatchJpaRepository jpaRepository;
-    private final PatchEntityMapper mapper;
+    private final PatchEntityMapper  mapper;
 
     public PatchRepositoryAdapter(PatchJpaRepository jpaRepository, PatchEntityMapper mapper) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        this.mapper        = mapper;
     }
 
     @Override
     public List<Patch> findOpenPublicPatches() {
-        return jpaRepository.findByStatusAndIsPublic(PatchStatus.OPEN, true).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpaRepository.findByStatusAndIsPublic(PatchStatus.OPEN, true)
+                .stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Patch> findByIds(List<UUID> ids) {
-        return jpaRepository.findAllById(ids).stream()
-                .map(mapper::toDomain)
-                .toList();
+        return jpaRepository.findAllById(ids)
+                .stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<Patch> findById(UUID id) {
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 }
