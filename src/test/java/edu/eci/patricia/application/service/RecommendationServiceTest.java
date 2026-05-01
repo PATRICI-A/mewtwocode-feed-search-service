@@ -45,10 +45,9 @@ class RecommendationServiceTest {
 
     @Test
     void retornaListaVaciaCuandoNoHayCandidatos() {
+        // Usuario nuevo (sin intereses ni historial) → popularFallback → findPopularPatches → vacío
         when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
         when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Collections.emptySet());
-        when(patchRepository.findOpenPublicPatches()).thenReturn(Collections.emptyList());
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
@@ -61,26 +60,25 @@ class RecommendationServiceTest {
 
         when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("GAMING")));
         when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Collections.emptySet());
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.4f);
-        assertThat(result.get(0).getReason()).contains("interests");
+        assertThat(result.get(0).getReason()).contains("intereses");
     }
 
     @Test
-    void excluyePatchesConLosQueElUsuarioYaInteractuo() {
+    void excluyePatchesDondeElUsuarioHizoJoin() {
         UUID patchId = UUID.randomUUID();
         Patch patch = buildPatch(patchId, PatchCategory.STUDY);
 
         when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("STUDY")));
         when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Set.of(patchId));
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Set.of(patchId));
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
-        when(patchRepository.findByIds(any())).thenReturn(List.of(patch));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
@@ -96,7 +94,7 @@ class RecommendationServiceTest {
 
         when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("SPORTS")));
         when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Collections.emptySet());
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(patches);
 
         List<ScoredPatch> result = service.getRecommendations(userId);
@@ -122,7 +120,7 @@ class RecommendationServiceTest {
 
         when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("FOOD")));
         when(interactionRepository.findByUserId(userId)).thenReturn(List.of(skip));
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Set.of(patchInteractuado));
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
         when(patchRepository.findByIds(any())).thenReturn(List.of(patchVisto));
 
@@ -135,11 +133,12 @@ class RecommendationServiceTest {
 
     @Test
     void excluyePatchesConScoreCeroONegativo() {
+        // Usuario con interés en SPORTS, parche CULTURE → score 0 → excluido
         Patch patch = buildPatch(UUID.randomUUID(), PatchCategory.CULTURE);
 
-        when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("SPORTS")));
         when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Collections.emptySet());
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
@@ -165,7 +164,7 @@ class RecommendationServiceTest {
 
         when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
         when(interactionRepository.findByUserId(userId)).thenReturn(List.of(join));
-        when(interactionRepository.findInteractedPatchIds(userId)).thenReturn(Set.of(patchInteractuado));
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Set.of(patchInteractuado));
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
         when(patchRepository.findByIds(any())).thenReturn(List.of(patchUnido));
 
@@ -174,7 +173,7 @@ class RecommendationServiceTest {
         // 0.15 por un join en la misma categoria
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.15f);
-        assertThat(result.get(0).getReason()).contains("joined");
+        assertThat(result.get(0).getReason()).contains("participado");
     }
 
     private Patch buildPatch(UUID id, PatchCategory category) {

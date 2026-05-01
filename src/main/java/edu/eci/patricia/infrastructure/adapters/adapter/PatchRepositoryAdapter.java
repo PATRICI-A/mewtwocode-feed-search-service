@@ -1,11 +1,14 @@
 package edu.eci.patricia.infrastructure.adapters.adapter;
 
+import edu.eci.patricia.application.dto.request.SearchRequest;
 import edu.eci.patricia.domain.model.Patch;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
-import edu.eci.patricia.infrastructure.adapters.persistence.entity.PatchEntity;
+import edu.eci.patricia.infrastructure.adapters.persistence.PatchSpecification;
 import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchEntityMapper;
 import edu.eci.patricia.infrastructure.adapters.persistence.repository.PatchJpaRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,18 +40,24 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
     }
 
     @Override
-    public List<Patch> searchPatches(edu.eci.patricia.application.dto.request.SearchRequest request) {
-        // Implementation using JPA Specifications would be ideal here for dynamic filtering
-        // For now, let's use a simpler approach or implement the Specification
-        return jpaRepository.findAll().stream()
-                .filter(p -> request.getQ() == null || p.getTitle().toLowerCase().contains(request.getQ().toLowerCase()) 
-                        || p.getDescription().toLowerCase().contains(request.getQ().toLowerCase()))
-                .filter(p -> request.getCategory() == null || p.getCategory().equals(request.getCategory()))
-                .filter(p -> request.getCampusZone() == null || p.getCampusZone().equals(request.getCampusZone()))
-                .filter(p -> request.getStatus() == null || p.getStatus().equals(request.getStatus()))
-                .filter(p -> request.getDateFrom() == null || !p.getStartTime().toLocalDate().isBefore(request.getDateFrom()))
-                .filter(p -> request.getDateTo() == null || !p.getStartTime().toLocalDate().isAfter(request.getDateTo()))
-                .filter(p -> Boolean.TRUE.equals(p.getIsPublic()))
+    public List<Patch> searchPatches(SearchRequest request, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return jpaRepository.findAll(PatchSpecification.fromRequest(request), pageable)
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public long countPatches(SearchRequest request) {
+        return jpaRepository.count(PatchSpecification.fromRequest(request));
+    }
+
+    @Override
+    public List<Patch> findPopularPatches(int limit) {
+        return jpaRepository.findTop10ByStatusAndIsPublicOrderByCurrentCountDesc(PatchStatus.OPEN, true)
+                .stream()
+                .limit(limit)
                 .map(mapper::toDomain)
                 .toList();
     }

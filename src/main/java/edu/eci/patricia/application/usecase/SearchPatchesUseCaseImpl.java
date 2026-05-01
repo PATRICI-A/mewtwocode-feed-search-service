@@ -2,6 +2,7 @@ package edu.eci.patricia.application.usecase;
 
 import edu.eci.patricia.application.dto.request.SearchRequest;
 import edu.eci.patricia.application.dto.response.PatchSummaryResponse;
+import edu.eci.patricia.application.dto.response.SearchResponse;
 import edu.eci.patricia.application.mapper.PatchDomainMapper;
 import edu.eci.patricia.domain.ports.in.SearchPatchesUseCase;
 import edu.eci.patricia.domain.ports.out.MembershipRepositoryPort;
@@ -27,11 +28,20 @@ public class SearchPatchesUseCaseImpl implements SearchPatchesUseCase {
     }
 
     @Override
-    public List<PatchSummaryResponse> execute(UUID userId, SearchRequest request, int page, int size) {
-        return patchRepository.searchPatches(request).stream()
+    public SearchResponse execute(UUID userId, SearchRequest request, int page, int size) {
+        long total = patchRepository.countPatches(request);
+        int totalPages = (int) Math.ceil((double) total / size);
+
+        List<PatchSummaryResponse> results = patchRepository.searchPatches(request, page, size).stream()
                 .map(p -> mapper.toResponse(p, membershipRepository.existsActiveMembership(p.getId(), userId), null))
-                .skip((long) page * size)
-                .limit(size)
                 .toList();
+
+        return SearchResponse.builder()
+                .results(results)
+                .total(total)
+                .page(page)
+                .size(size)
+                .totalPages(totalPages)
+                .build();
     }
 }

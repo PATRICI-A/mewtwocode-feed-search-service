@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface FeedInteractionJpaRepository extends JpaRepository<FeedInteractionEntity, UUID> {
     List<FeedInteractionEntity> findByUserId(UUID userId);
 
-    @Query("SELECT DISTINCT f.patchId FROM FeedInteractionEntity f WHERE f.userId = :userId")
-    List<UUID> findDistinctPatchIdsByUserId(@Param("userId") UUID userId);
+    @Query("SELECT DISTINCT f.patchId FROM FeedInteractionEntity f WHERE f.userId = :userId AND f.action = 'JOIN'")
+    List<UUID> findJoinedPatchIdsByUserId(@Param("userId") UUID userId);
 }

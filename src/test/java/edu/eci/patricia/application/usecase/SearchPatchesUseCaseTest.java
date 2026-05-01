@@ -2,6 +2,7 @@ package edu.eci.patricia.application.usecase;
 
 import edu.eci.patricia.application.dto.request.SearchRequest;
 import edu.eci.patricia.application.dto.response.PatchSummaryResponse;
+import edu.eci.patricia.application.dto.response.SearchResponse;
 import edu.eci.patricia.application.mapper.PatchDomainMapper;
 import edu.eci.patricia.domain.model.Patch;
 import edu.eci.patricia.domain.model.enums.CampusZone;
@@ -70,29 +71,31 @@ class SearchPatchesUseCaseTest {
                 .title(samplePatch.getTitle())
                 .build();
 
-        when(patchRepository.searchPatches(any(SearchRequest.class))).thenReturn(List.of(samplePatch));
+        when(patchRepository.countPatches(any(SearchRequest.class))).thenReturn(1L);
+        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt())).thenReturn(List.of(samplePatch));
         when(membershipRepository.existsActiveMembership(eq(samplePatch.getId()), eq(userId))).thenReturn(false);
         when(mapper.toResponse(eq(samplePatch), anyBoolean(), any())).thenReturn(responseDto);
 
         // Act
-        List<PatchSummaryResponse> result = searchPatchesUseCase.execute(userId, request, 0, 10);
+        SearchResponse result = searchPatchesUseCase.execute(userId, request, 0, 10);
 
         // Assert
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Torneo de Futbol", result.get(0).getTitle());
+        assertEquals(1, result.getResults().size());
+        assertEquals("Torneo de Futbol", result.getResults().get(0).getTitle());
     }
 
     @Test
     void execute_WithEmptyResults_ShouldReturnEmptyList() {
         // Arrange
         SearchRequest request = SearchRequest.builder().q("NonExistent").build();
-        when(patchRepository.searchPatches(any(SearchRequest.class))).thenReturn(List.of());
+        when(patchRepository.countPatches(any(SearchRequest.class))).thenReturn(0L);
+        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt())).thenReturn(List.of());
 
         // Act
-        List<PatchSummaryResponse> result = searchPatchesUseCase.execute(userId, request, 0, 10);
+        SearchResponse result = searchPatchesUseCase.execute(userId, request, 0, 10);
 
         // Assert
-        assertTrue(result.isEmpty());
+        assertTrue(result.getResults().isEmpty());
     }
 }
