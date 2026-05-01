@@ -3,7 +3,7 @@ package edu.eci.patricia.entrypoints.rest.controller;
 import edu.eci.patricia.application.dto.request.InteractRequest;
 import edu.eci.patricia.application.dto.response.PatchSummaryResponse;
 import edu.eci.patricia.domain.ports.in.FeedUseCase;
-import edu.eci.patricia.domain.ports.out.FeedInteractionRepositoryPort;
+import edu.eci.patricia.domain.ports.in.RegisterInteractionPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,11 +22,11 @@ import java.util.UUID;
 public class FeedController {
 
     private final FeedUseCase feedUseCase;
-    private final FeedInteractionRepositoryPort interactionRepository;
+    private final RegisterInteractionPort registerInteraction;
 
-    public FeedController(FeedUseCase feedUseCase, FeedInteractionRepositoryPort interactionRepository) {
+    public FeedController(FeedUseCase feedUseCase, RegisterInteractionPort registerInteraction) {
         this.feedUseCase = feedUseCase;
-        this.interactionRepository = interactionRepository;
+        this.registerInteraction = registerInteraction;
     }
 
     @Operation(
@@ -73,7 +73,7 @@ public class FeedController {
             @RequestParam UUID userId,
             @Valid @RequestBody InteractRequest request) {
 
-        interactionRepository.save(userId, patchId, request.getAction());
+        registerInteraction.register(userId, patchId, request.getAction());
         return ResponseEntity.noContent().build();
     }
 }
