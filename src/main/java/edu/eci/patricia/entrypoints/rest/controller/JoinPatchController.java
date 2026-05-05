@@ -23,7 +23,7 @@ public class JoinPatchController {
 
     @Operation(
             summary = "Unirse a un parche desde el feed ",
-            description = "Une al usuario a un parche público con cupo disponible"
+            description = "Pone al usuario a un parche público con cupo disponible"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario unido exitosamente"),
