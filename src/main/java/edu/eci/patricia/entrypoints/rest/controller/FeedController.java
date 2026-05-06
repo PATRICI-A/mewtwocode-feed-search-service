@@ -56,13 +56,15 @@ public class FeedController {
 
     @Operation(
             summary = "Registrar interacción con un parche",
-            description = "Registra una acción del usuario sobre un parche (VIEW, JOIN, SKIP). " +
-                    "VIEW y SKIP influyen en el score de recomendaciones pero no excluyen el parche del feed. " +
-                    "JOIN excluye el parche de futuras recomendaciones."
+            description = "Registra una acción del usuario sobre un parche y actualiza su score de afinidad por categoría " +
+                    "usando la fórmula de decaimiento temporal: S = S_actual × e^(-0.01 × días) + peso_evento. " +
+                    "Pesos por acción — VIEW: +0.1 | JOIN: +1.0 | SKIP: -10.0. " +
+                    "El score por categoría se mantiene entre 0 y 100 y determina qué aparece en el feed y recomendaciones. " +
+                    "JOIN además excluye el parche de futuras recomendaciones."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Interacción registrada"),
-            @ApiResponse(responseCode = "400", description = "Acción inválida"),
+            @ApiResponse(responseCode = "204", description = "Interacción registrada y score de categoría actualizado"),
+            @ApiResponse(responseCode = "400", description = "Acción inválida o patchId no encontrado"),
             @ApiResponse(responseCode = "401", description = "JWT inválido o ausente")
     })
     @PostMapping("/parches/{patchId}/interact")

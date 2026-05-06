@@ -37,8 +37,8 @@ public class SearchController {
     })
     @GetMapping("/search")
     public ResponseEntity<SearchResponse> search(
-            @Parameter(description = "ID del usuario que realiza la búsqueda", required = true)
-            @RequestParam UUID userId,
+            @Parameter(description = "ID del usuario que realiza la búsqueda (opcional, activa indicador de membresía)")
+            @RequestParam(required = false) UUID userId,
             @Valid SearchRequest request,
             @Parameter(description = "Número de página (base 0)", example = "0")
             @RequestParam(defaultValue = "0") int page,
