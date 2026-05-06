@@ -8,6 +8,7 @@ import edu.eci.patricia.domain.model.enums.PatchCategory;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.MembershipRepositoryPort;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
+import edu.eci.patricia.domain.ports.out.UserInterestRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +28,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FeedServiceTest {
 
-    @Mock private PatchRepositoryPort      patchRepository;
-    @Mock private MembershipRepositoryPort membershipRepository;
-    @Mock private PatchDomainMapper        mapper;
+    @Mock private PatchRepositoryPort        patchRepository;
+    @Mock private UserInterestRepositoryPort interestRepository;
+    @Mock private MembershipRepositoryPort   membershipRepository;
+    @Mock private PatchDomainMapper          mapper;
 
     private FeedService service;
 
@@ -37,7 +39,8 @@ class FeedServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new FeedService(patchRepository, membershipRepository, mapper);
+        service = new FeedService(patchRepository, interestRepository, membershipRepository, mapper);
+        when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
     }
 
     @Test

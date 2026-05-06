@@ -4,14 +4,12 @@ import edu.eci.patricia.application.dto.response.PatchRecommendationResponse;
 import edu.eci.patricia.application.mapper.PatchDomainMapper;
 import edu.eci.patricia.domain.ports.in.GetRecommendationsPort;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +28,7 @@ public class RecommendationController {
     }
 
     @Operation(summary = "Obtener recomendaciones de parches",
-               description = "Retorna hasta 10 parches recomendados para el usuario según sus intereses e historial de actividad")
+               description = "Retorna hasta 10 parches recomendados. Para usuarios nuevos retorna los más populares del campus.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista de recomendaciones (puede ser vacía)"),
         @ApiResponse(responseCode = "401", description = "JWT inválido o ausente"),
@@ -38,6 +36,7 @@ public class RecommendationController {
     })
     @GetMapping("/recommended")
     public ResponseEntity<List<PatchRecommendationResponse>> getRecommendations(
+            @Parameter(description = "ID del usuario autenticado", required = true)
             @RequestParam UUID userId) {
 
         List<PatchRecommendationResponse> response = getRecommendationsPort.getRecommendations(userId)
@@ -52,4 +51,5 @@ public class RecommendationController {
 
         return ResponseEntity.ok(response);
     }
+
 }
