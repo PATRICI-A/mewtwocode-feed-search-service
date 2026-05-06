@@ -30,6 +30,25 @@ public class PatchEntityMapper {
                 .build();
     }
 
+    public PatchEntity toEntity(Patch patch) {
+        return PatchEntity.builder()
+                .id(patch.getId())
+                .title(patch.getTitle())
+                .description(patch.getDescription())
+                .category(patch.getCategory())
+                .location(patch.getLocation())
+                .campusZone(patch.getCampusZone())
+                .startTime(patch.getStartTime())
+                .endTime(patch.getEndTime())
+                .capacity(patch.getCapacity())
+                .currentCount(patch.getCurrentCount())
+                .status(patch.getStatus())
+                .creatorId(patch.getCreatorId())
+                .isPublic(patch.getIsPublic())
+                .createdAt(patch.getCreatedTime())
+                .build();
+    }
+
     public UserInterest toDomain(UserInterestEntity entity) {
         return UserInterest.builder()
                 .id(entity.getId())
