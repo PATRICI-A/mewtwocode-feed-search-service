@@ -1,0 +1,50 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: m06-postgres
+    environment:
+      POSTGRES_DB: m06_feed
+      POSTGRES_USER: patricia
+      POSTGRES_PASSWORD: patricia
+    ports:
+      - "5433:5432"
+    volumes:
+      - m06_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U patricia -d m06_feed"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: m06-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: m06-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/m06_feed
+      SPRING_DATASOURCE_USERNAME: patricia
+      SPRING_DATASOURCE_PASSWORD: patricia
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-patriciaSecretKeyForJwtValidation2025!}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  m06_postgres_data:
