@@ -41,7 +41,7 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void retornaListaVaciaCuandoNoHayCandidatos() {
+    void returnsEmptyListWhenNoCandidates() {
         when(categoryScoreRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
 
@@ -51,7 +51,7 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void puntajeAltoSiCategoriaCoincideConScoreDelUsuario() {
+    void highScoreWhenCategoryMatchesUserScore() {
         // catScore = 40 → 40/100 = 0.40
         Patch patch = buildPatch(UUID.randomUUID(), PatchCategory.GAMING);
 
@@ -64,11 +64,11 @@ class RecommendationServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.4f);
-        assertThat(result.get(0).getReason()).contains("perfil");
+        assertThat(result.get(0).getReason()).contains("profile");
     }
 
     @Test
-    void excluyePatchesDondeElUsuarioHizoJoin() {
+    void excludesPatchesWhereUserJoined() {
         UUID patchId = UUID.randomUUID();
         Patch patch = buildPatch(patchId, PatchCategory.STUDY);
 
@@ -83,7 +83,7 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void limiteMaximoDiezRecomendaciones() {
+    void limitsToTenRecommendations() {
         List<Patch> patches = new java.util.ArrayList<>();
         for (int i = 0; i < 15; i++) {
             patches.add(buildPatch(UUID.randomUUID(), PatchCategory.SPORTS));
@@ -100,14 +100,14 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void scoreReflejaValorDeCategoryScore() {
+    void scoreReflectsCategoryScoreValue() {
         // catScore = 30 → 30/100 = 0.30
-        Patch candidato = buildPatch(UUID.randomUUID(), PatchCategory.FOOD);
+        Patch candidate = buildPatch(UUID.randomUUID(), PatchCategory.FOOD);
 
         when(categoryScoreRepository.findByUserId(userId)).thenReturn(
                 List.of(buildCategoryScore(PatchCategory.FOOD, 30f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
-        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
+        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidate));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
@@ -116,8 +116,8 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void excluyePatchesConScoreCeroONegativo() {
-        // Score for SPORTS, patch is CULTURE → catScore = 0 → excluded
+    void excludesPatchesWithZeroOrNegativeScore() {
+        // User has score for SPORTS, patch is CULTURE → catScore = 0 → excluded
         Patch patch = buildPatch(UUID.randomUUID(), PatchCategory.CULTURE);
 
         when(categoryScoreRepository.findByUserId(userId)).thenReturn(
@@ -131,20 +131,20 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void scoreBajoConCategoryScoreMinimo() {
+    void lowScoreWithMinimumCategoryScore() {
         // catScore = 15 → 15/100 = 0.15
-        Patch candidato = buildPatch(UUID.randomUUID(), PatchCategory.GAMING);
+        Patch candidate = buildPatch(UUID.randomUUID(), PatchCategory.GAMING);
 
         when(categoryScoreRepository.findByUserId(userId)).thenReturn(
                 List.of(buildCategoryScore(PatchCategory.GAMING, 15f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
-        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
+        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidate));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.15f);
-        assertThat(result.get(0).getReason()).contains("perfil");
+        assertThat(result.get(0).getReason()).contains("profile");
     }
 
     private Patch buildPatch(UUID id, PatchCategory category) {

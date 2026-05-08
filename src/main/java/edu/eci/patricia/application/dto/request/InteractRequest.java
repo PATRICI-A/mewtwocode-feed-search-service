@@ -13,12 +13,12 @@ import lombok.*;
 @Schema(description = "Cuerpo de la interacción del usuario con un parche")
 public class InteractRequest {
 
-    @NotNull(message = "Defina al menos una acción")
+    @NotNull(message = "Action is required")
     @Schema(
-        description = "Tipo de acción realizada sobre el parche. " +
-                      "VIEW: el usuario vio el parche (+0.1 en score de categoría). " +
-                      "JOIN: el usuario se unió (+1.0 en score, excluye el parche de futuras recomendaciones). " +
-                      "SKIP: el usuario ignoró el parche (-10.0 en score de categoría).",
+        description = "Action performed on the patch. " +
+                      "VIEW: user viewed the patch (+0.1 category score). " +
+                      "JOIN: user joined (+1.0 category score, excludes patch from future recommendations). " +
+                      "SKIP: user dismissed the patch (-10.0 category score).",
         example = "JOIN",
         allowableValues = {"VIEW", "JOIN", "SKIP"}
     )

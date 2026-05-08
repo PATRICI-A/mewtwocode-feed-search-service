@@ -1,5 +1,6 @@
 package edu.eci.patricia.application.service;
 
+import edu.eci.patricia.application.dto.request.FeedFilterRequest;
 import edu.eci.patricia.application.dto.response.PatchSummaryResponse;
 import edu.eci.patricia.application.mapper.PatchDomainMapper;
 import edu.eci.patricia.domain.model.Patch;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FeedService implements FeedUseCase {
@@ -42,11 +44,26 @@ public class FeedService implements FeedUseCase {
     }
 
     @Override
-    public List<PatchSummaryResponse> execute(UUID userId, int page, int size) {
+    public List<PatchSummaryResponse> execute(UUID userId, FeedFilterRequest filters, int page, int size) {
         Map<PatchCategory, Float> categoryScores = categoryScoreRepository.findByUserId(userId).stream()
                 .collect(Collectors.toMap(UserCategoryScore::getCategory, UserCategoryScore::getScoreTotal));
 
-        return patchRepository.findOpenPublicPatches().stream()
+        Stream<Patch> stream = patchRepository.findOpenPublicPatches().stream();
+
+        if (filters != null) {
+            if (filters.getCategory() != null) {
+                stream = stream.filter(p -> p.getCategory() == filters.getCategory());
+            }
+            if (filters.getCampusZone() != null) {
+                stream = stream.filter(p -> p.getCampusZone() == filters.getCampusZone());
+            }
+            if (filters.getDateFrom() != null) {
+                LocalDateTime from = filters.getDateFrom().atStartOfDay();
+                stream = stream.filter(p -> p.getStartTime() != null && !p.getStartTime().isBefore(from));
+            }
+        }
+
+        return stream
                 .map(p -> {
                     float score = scoreRelevance(p, categoryScores);
                     boolean isMember = membershipRepository.existsActiveMembership(p.getId(), userId);

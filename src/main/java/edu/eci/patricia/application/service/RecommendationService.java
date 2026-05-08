@@ -61,7 +61,7 @@ public class RecommendationService implements GetRecommendationsPort {
                 .map(p -> ScoredPatch.builder()
                         .patch(p)
                         .affinityScore(POPULAR_FALLBACK_SCORE)
-                        .reason("Popular en tu campus")
+                        .reason("Popular on campus")
                         .build())
                 .limit(MAX_RECOMMENDATIONS)
                 .toList();
@@ -74,7 +74,7 @@ public class RecommendationService implements GetRecommendationsPort {
         return ScoredPatch.builder()
                 .patch(patch)
                 .affinityScore(affinity)
-                .reason("compatible con tu perfil")
+                .reason("matches your profile")
                 .build();
     }
 }

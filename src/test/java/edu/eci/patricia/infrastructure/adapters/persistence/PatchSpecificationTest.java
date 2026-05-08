@@ -15,41 +15,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PatchSpecificationTest {
 
     @Test
-    void fromRequestNuncaRetornaNull() {
+    void fromRequestNeverReturnsNull() {
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(SearchRequest.builder().build());
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConTerminoQRetornaSpec() {
+    void fromRequestWithQueryTermReturnsSpec() {
         SearchRequest request = SearchRequest.builder().q("futbol").build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConCategoriaRetornaSpec() {
+    void fromRequestWithCategoryReturnsSpec() {
         SearchRequest request = SearchRequest.builder().category(PatchCategory.SPORTS).build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConCampusZoneRetornaSpec() {
+    void fromRequestWithCampusZoneReturnsSpec() {
         SearchRequest request = SearchRequest.builder().campusZone(CampusZone.CAFETERIA).build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConStatusRetornaSpec() {
+    void fromRequestWithStatusReturnsSpec() {
         SearchRequest request = SearchRequest.builder().status(PatchStatus.OPEN).build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConDateFromRetornaSpec() {
+    void fromRequestWithDateFromReturnsSpec() {
         SearchRequest request = SearchRequest.builder()
                 .dateFrom(LocalDate.of(2025, 6, 1))
                 .build();
@@ -58,7 +58,7 @@ class PatchSpecificationTest {
     }
 
     @Test
-    void fromRequestConDateToRetornaSpec() {
+    void fromRequestWithDateToReturnsSpec() {
         SearchRequest request = SearchRequest.builder()
                 .dateTo(LocalDate.of(2025, 6, 30))
                 .build();
@@ -67,21 +67,21 @@ class PatchSpecificationTest {
     }
 
     @Test
-    void fromRequestConMaxGroupSizeRetornaSpec() {
+    void fromRequestWithMaxGroupSizeReturnsSpec() {
         SearchRequest request = SearchRequest.builder().maxGroupSize(10).build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConHasAvailableSpotsRetornaSpec() {
+    void fromRequestWithAvailableSpotsReturnsSpec() {
         SearchRequest request = SearchRequest.builder().hasAvailableSpots(true).build();
         Specification<PatchEntity> spec = PatchSpecification.fromRequest(request);
         assertThat(spec).isNotNull();
     }
 
     @Test
-    void fromRequestConTodosFiltrosRetornaSpec() {
+    void fromRequestWithAllFiltersReturnsSpec() {
         SearchRequest request = SearchRequest.builder()
                 .q("parche")
                 .category(PatchCategory.GAMING)
