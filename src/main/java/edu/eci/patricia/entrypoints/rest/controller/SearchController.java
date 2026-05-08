@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/parches")
-@Tag(name = "Search", description = "Búsqueda y filtrado de parches")
+@Tag(name = "Search", description = "Patch search and filtering")
 public class SearchController {
 
     private final SearchPatchesUseCase searchPatchesUseCase;
@@ -26,23 +26,23 @@ public class SearchController {
     }
 
     @Operation(
-            summary = "Buscar parches con filtros",
-            description = "Búsqueda dinámica de parches públicos. El campo 'q' filtra por título y descripción " +
-                    "(mínimo 2 caracteres si se provee). Los demás filtros son opcionales y acumulables."
+            summary = "Search patches with filters",
+            description = "Dynamic search of public patches. Field 'q' filters by title and description " +
+                    "(minimum 2 characters if provided). All other filters are optional and stackable."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Búsqueda exitosa"),
-            @ApiResponse(responseCode = "400", description = "Parámetro inválido (ej. 'q' con menos de 2 caracteres)"),
-            @ApiResponse(responseCode = "401", description = "JWT inválido o ausente")
+            @ApiResponse(responseCode = "200", description = "Search successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid parameter (e.g. 'q' with less than 2 characters)"),
+            @ApiResponse(responseCode = "401", description = "Invalid or missing JWT")
     })
     @GetMapping("/search")
     public ResponseEntity<SearchResponse> search(
-            @Parameter(description = "ID del usuario que realiza la búsqueda", required = true)
-            @RequestParam UUID userId,
+            @Parameter(description = "ID of the user performing the search (optional, enables membership indicator)")
+            @RequestParam(required = false) UUID userId,
             @Valid SearchRequest request,
-            @Parameter(description = "Número de página (base 0)", example = "0")
+            @Parameter(description = "Page number (zero-based)", example = "0")
             @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Resultados por página", example = "20")
+            @Parameter(description = "Results per page", example = "20")
             @RequestParam(defaultValue = "20") int size) {
 
         SearchResponse response = searchPatchesUseCase.execute(userId, request, page, size);

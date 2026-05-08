@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/feed")
-@Tag(name = "Feed", description = "Recomendaciones personalizadas de parches")
+@Tag(name = "Feed", description = "Personalized patch recommendations")
 public class RecommendationController {
 
     private final GetRecommendationsPort getRecommendationsPort;
@@ -27,16 +27,19 @@ public class RecommendationController {
         this.mapper = mapper;
     }
 
-    @Operation(summary = "Obtener recomendaciones de parches",
-               description = "Retorna hasta 10 parches recomendados. Para usuarios nuevos retorna los más populares del campus.")
+    @Operation(
+            summary = "Get patch recommendations",
+            description = "Returns up to 10 recommended patches ranked by category affinity score. " +
+                    "New users with no interaction history receive the most popular patches on campus."
+    )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista de recomendaciones (puede ser vacía)"),
-        @ApiResponse(responseCode = "401", description = "JWT inválido o ausente"),
-        @ApiResponse(responseCode = "503", description = "Servicio dependiente no disponible")
+            @ApiResponse(responseCode = "200", description = "Recommendation list returned (may be empty)"),
+            @ApiResponse(responseCode = "401", description = "Invalid or missing JWT"),
+            @ApiResponse(responseCode = "503", description = "Dependent service unavailable")
     })
     @GetMapping("/recommended")
     public ResponseEntity<List<PatchRecommendationResponse>> getRecommendations(
-            @Parameter(description = "ID del usuario autenticado", required = true)
+            @Parameter(description = "Authenticated user ID", required = true)
             @RequestParam UUID userId) {
 
         List<PatchRecommendationResponse> response = getRecommendationsPort.getRecommendations(userId)
@@ -51,5 +54,4 @@ public class RecommendationController {
 
         return ResponseEntity.ok(response);
     }
-
 }
