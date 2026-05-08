@@ -1,0 +1,535 @@
+<mxfile host="app.diagrams.net" modified="2026-05-07T00:00:00.000Z" version="21.0.0">
+
+  <!-- ======================================================= -->
+  <!-- PAGE 1: GET /feed/parches — Personalized Feed           -->
+  <!-- ======================================================= -->
+  <diagram id="seq-feed" name="1. GET /feed/parches">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="GET /api/v1/feed/parches — Personalized Feed Sequence" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Lifeline Headers ===== -->
+        <mxCell id="lf1h" value="Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf2h" value="FeedController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf3h" value="FeedService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf4h" value="UserCategoryScore&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf5h" value="PatchRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf6h" value="Membership&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="lf7h" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#ae4132;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="50" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines (vertical dashed) -->
+        <mxCell id="lf1l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry x="100" y="90" as="geometry"><Array as="points"><mxPoint x="100" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf2l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="310" y="90" as="geometry"><Array as="points"><mxPoint x="310" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf3l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="525" y="90" as="geometry"><Array as="points"><mxPoint x="525" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf4l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry x="735" y="90" as="geometry"><Array as="points"><mxPoint x="735" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf5l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="945" y="90" as="geometry"><Array as="points"><mxPoint x="945" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf6l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="1150" y="90" as="geometry"><Array as="points"><mxPoint x="1150" y="920"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="lf7l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#ae4132;" edge="1" parent="1">
+          <mxGeometry x="1345" y="100" as="geometry"><Array as="points"><mxPoint x="1345" y="920"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- ===== Messages ===== -->
+        <!-- 1: Client → FeedController -->
+        <mxCell id="m1" value="1. GET /feed/parches?userId=...&amp;category=...&amp;page=0" style="endArrow=block;endFill=1;html=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="100" y="130" as="geometry"><Array as="points"><mxPoint x="310" y="130"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 2: FeedController → FeedService -->
+        <mxCell id="m2" value="2. execute(userId, FeedFilterRequest, page, size)" style="endArrow=block;endFill=1;html=1;strokeColor=#82b366;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="310" y="165" as="geometry"><Array as="points"><mxPoint x="525" y="165"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 3: FeedService → CategoryScoreRepo -->
+        <mxCell id="m3" value="3. findByUserId(userId)" style="endArrow=block;endFill=1;html=1;strokeColor=#9673a6;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="525" y="200" as="geometry"><Array as="points"><mxPoint x="735" y="200"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 4: CategoryScoreRepo → DB -->
+        <mxCell id="m4" value="4. SELECT * FROM user_category_scores WHERE user_id=?" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="735" y="235" as="geometry"><Array as="points"><mxPoint x="1345" y="235"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 5: DB → CategoryScoreRepo (return) -->
+        <mxCell id="m5" value="5. [UserCategoryScore list]" style="endArrow=open;endFill=0;html=1;strokeColor=#9673a6;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1345" y="265" as="geometry"><Array as="points"><mxPoint x="735" y="265"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 6: FeedService → PatchRepo -->
+        <mxCell id="m6" value="6. findOpenPublicPatches()" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="525" y="300" as="geometry"><Array as="points"><mxPoint x="945" y="300"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 7: PatchRepo → DB -->
+        <mxCell id="m7" value="7. SELECT * FROM patches WHERE status='OPEN' AND is_public=true" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="945" y="335" as="geometry"><Array as="points"><mxPoint x="1345" y="335"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 8: DB → PatchRepo (return) -->
+        <mxCell id="m8" value="8. [Patch list]" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1345" y="365" as="geometry"><Array as="points"><mxPoint x="945" y="365"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 9: Filter note -->
+        <mxCell id="m9_note" value="9. Apply optional filters:&lt;br/&gt;category / campusZone / dateFrom" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="440" y="390" width="210" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 10: Score note -->
+        <mxCell id="m10_note" value="10. Score each patch:&lt;br/&gt;affinity = catScore/100 × 0.50&lt;br/&gt;+ temporalScore (0-0.20)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="440" y="450" width="210" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 11: FeedService → MembershipRepo (per patch) -->
+        <mxCell id="m11" value="11. existsActiveMembership(patchId, userId)  [per patch]" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="525" y="525" as="geometry"><Array as="points"><mxPoint x="1150" y="525"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="m11r" value="boolean isMember" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1150" y="555" as="geometry"><Array as="points"><mxPoint x="525" y="555"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 12: Sort & paginate note -->
+        <mxCell id="m12_note" value="12. Sort by affinityScore DESC&lt;br/&gt;    Skip(page×size).limit(size)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="440" y="580" width="210" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- 13: FeedService → FeedController (return) -->
+        <mxCell id="m13" value="13. [PatchSummaryResponse list]" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="525" y="645" as="geometry"><Array as="points"><mxPoint x="310" y="645"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 14: FeedController → Client (return) -->
+        <mxCell id="m14" value="14. 200 OK — List&lt;PatchSummaryResponse&gt;" style="endArrow=open;endFill=0;html=1;strokeColor=#6c8ebf;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="310" y="675" as="geometry"><Array as="points"><mxPoint x="100" y="675"/></Array></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ======================================================= -->
+  <!-- PAGE 2: POST /feed/parches/{id}/interact                -->
+  <!-- ======================================================= -->
+  <diagram id="seq-interact" name="2. POST interact">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title2" value="POST /api/v1/feed/parches/{patchId}/interact — Register Interaction Sequence" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifeline Headers -->
+        <mxCell id="i_lf1h" value="Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf2h" value="FeedController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf3h" value="RegisterInteraction&lt;br/&gt;Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf4h" value="FeedInteraction&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf5h" value="PatchRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf6h" value="UserCategoryScore&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="i_lf7h" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#ae4132;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="50" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="i_lf1l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry x="100" y="90" as="geometry"><Array as="points"><mxPoint x="100" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf2l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="310" y="90" as="geometry"><Array as="points"><mxPoint x="310" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf3l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="530" y="90" as="geometry"><Array as="points"><mxPoint x="530" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf4l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="745" y="90" as="geometry"><Array as="points"><mxPoint x="745" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf5l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="955" y="90" as="geometry"><Array as="points"><mxPoint x="955" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf6l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry x="1165" y="90" as="geometry"><Array as="points"><mxPoint x="1165" y="960"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_lf7l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#ae4132;" edge="1" parent="1">
+          <mxGeometry x="1365" y="100" as="geometry"><Array as="points"><mxPoint x="1365" y="960"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Messages -->
+        <mxCell id="i_m1" value='1. POST /feed/parches/{patchId}/interact?userId=...  body: {"action":"JOIN"}' style="endArrow=block;endFill=1;html=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="100" y="130" as="geometry"><Array as="points"><mxPoint x="310" y="130"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m2" value="2. register(userId, patchId, JOIN)" style="endArrow=block;endFill=1;html=1;strokeColor=#82b366;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="310" y="165" as="geometry"><Array as="points"><mxPoint x="530" y="165"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 3: save interaction log -->
+        <mxCell id="i_m3" value="3. save(userId, patchId, JOIN)" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="530" y="200" as="geometry"><Array as="points"><mxPoint x="745" y="200"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m3b" value="INSERT INTO feed_interactions" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="745" y="230" as="geometry"><Array as="points"><mxPoint x="1365" y="230"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m3br" value="OK" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1365" y="255" as="geometry"><Array as="points"><mxPoint x="745" y="255"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 4: get patch to find category -->
+        <mxCell id="i_m4" value="4. findByIds([patchId])" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="530" y="285" as="geometry"><Array as="points"><mxPoint x="955" y="285"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m4b" value="SELECT * FROM patches WHERE id IN (?)" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="955" y="315" as="geometry"><Array as="points"><mxPoint x="1365" y="315"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m4br" value="[Patch] — category = SPORTS" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1365" y="340" as="geometry"><Array as="points"><mxPoint x="955" y="340"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m4r" value="patch.category" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="955" y="360" as="geometry"><Array as="points"><mxPoint x="530" y="360"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 5: get existing score -->
+        <mxCell id="i_m5" value="5. findByUserIdAndCategory(userId, SPORTS)" style="endArrow=block;endFill=1;html=1;strokeColor=#9673a6;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="530" y="395" as="geometry"><Array as="points"><mxPoint x="1165" y="395"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m5b" value="SELECT * FROM user_category_scores WHERE user_id=? AND category=?" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="1165" y="425" as="geometry"><Array as="points"><mxPoint x="1365" y="425"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m5br" value="Optional&lt;UserCategoryScore&gt;" style="endArrow=open;endFill=0;html=1;strokeColor=#9673a6;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1365" y="450" as="geometry"><Array as="points"><mxPoint x="1165" y="450"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m5r" value="existing score (or empty)" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1165" y="470" as="geometry"><Array as="points"><mxPoint x="530" y="470"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 6: Decay + weight note -->
+        <mxCell id="i_m6_note" value="6. Compute new score:&lt;br/&gt;decayed = S_current × e^(−0.01 × days)&lt;br/&gt;newScore = clamp(decayed + 1.0, 0, 100)&lt;br/&gt;(JOIN weight = +1.0)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="430" y="500" width="240" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- 7: save updated score -->
+        <mxCell id="i_m7" value="7. save(UserCategoryScore)" style="endArrow=block;endFill=1;html=1;strokeColor=#9673a6;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="530" y="590" as="geometry"><Array as="points"><mxPoint x="1165" y="590"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m7b" value="INSERT/UPDATE user_category_scores" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="1165" y="620" as="geometry"><Array as="points"><mxPoint x="1365" y="620"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m7br" value="OK" style="endArrow=open;endFill=0;html=1;strokeColor=#9673a6;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1365" y="645" as="geometry"><Array as="points"><mxPoint x="1165" y="645"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 8: return void -->
+        <mxCell id="i_m8" value="8. void" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="530" y="680" as="geometry"><Array as="points"><mxPoint x="310" y="680"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="i_m9" value="9. 204 No Content" style="endArrow=open;endFill=0;html=1;strokeColor=#6c8ebf;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="310" y="710" as="geometry"><Array as="points"><mxPoint x="100" y="710"/></Array></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ======================================================= -->
+  <!-- PAGE 3: GET /feed/recommended                           -->
+  <!-- ======================================================= -->
+  <diagram id="seq-recommend" name="3. GET /feed/recommended">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="rtitle" value="GET /api/v1/feed/recommended — Personalized Recommendations Sequence" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifeline Headers -->
+        <mxCell id="r_lf1h" value="Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf2h" value="Recommendation&lt;br/&gt;Controller" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf3h" value="Recommendation&lt;br/&gt;Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf4h" value="UserCategoryScore&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf5h" value="FeedInteraction&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf6h" value="PatchRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_lf7h" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#ae4132;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="50" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="r_lf1l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry x="95" y="90" as="geometry"><Array as="points"><mxPoint x="95" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf2l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="285" y="90" as="geometry"><Array as="points"><mxPoint x="285" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf3l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="495" y="90" as="geometry"><Array as="points"><mxPoint x="495" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf4l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry x="705" y="90" as="geometry"><Array as="points"><mxPoint x="705" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf5l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="915" y="90" as="geometry"><Array as="points"><mxPoint x="915" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf6l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="1125" y="90" as="geometry"><Array as="points"><mxPoint x="1125" y="1000"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_lf7l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#ae4132;" edge="1" parent="1">
+          <mxGeometry x="1325" y="100" as="geometry"><Array as="points"><mxPoint x="1325" y="1000"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Messages -->
+        <mxCell id="r_m1" value="1. GET /feed/recommended?userId=..." style="endArrow=block;endFill=1;html=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="95" y="130" as="geometry"><Array as="points"><mxPoint x="285" y="130"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m2" value="2. getRecommendations(userId)" style="endArrow=block;endFill=1;html=1;strokeColor=#82b366;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="285" y="165" as="geometry"><Array as="points"><mxPoint x="495" y="165"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m3" value="3. findByUserId(userId)" style="endArrow=block;endFill=1;html=1;strokeColor=#9673a6;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="495" y="200" as="geometry"><Array as="points"><mxPoint x="705" y="200"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m3b" value="SELECT FROM user_category_scores" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="705" y="230" as="geometry"><Array as="points"><mxPoint x="1325" y="230"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m3r" value="[UserCategoryScore list]" style="endArrow=open;endFill=0;html=1;strokeColor=#9673a6;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1325" y="260" as="geometry"><Array as="points"><mxPoint x="705" y="260"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m3rr" value="categoryScores map" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="705" y="280" as="geometry"><Array as="points"><mxPoint x="495" y="280"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="r_m4" value="4. findJoinedPatchIds(userId)" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="495" y="310" as="geometry"><Array as="points"><mxPoint x="915" y="310"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m4b" value="SELECT patch_id WHERE action='JOIN'" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="915" y="340" as="geometry"><Array as="points"><mxPoint x="1325" y="340"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m4r" value="Set&lt;UUID&gt; joinedPatchIds" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1325" y="365" as="geometry"><Array as="points"><mxPoint x="915" y="365"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m4rr" value="joinedPatchIds" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="915" y="385" as="geometry"><Array as="points"><mxPoint x="495" y="385"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Branch: no scores → popular fallback -->
+        <mxCell id="r_branch" value="[if categoryScores.isEmpty()]  Popular Fallback:" style="text;html=1;strokeColor=none;fillColor=#f8cecc;align=left;fontSize=10;fontStyle=2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="410" width="300" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_m5a" value="5a. findPopularPatches(20)" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="495" y="440" as="geometry"><Array as="points"><mxPoint x="1125" y="440"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m5ar" value="top 10 popular → reason: 'Popular on campus'" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1125" y="465" as="geometry"><Array as="points"><mxPoint x="495" y="465"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Branch: has scores → affinity scoring -->
+        <mxCell id="r_branch2" value="[else]  Affinity Scoring:" style="text;html=1;strokeColor=none;fillColor=#d5e8d4;align=left;fontSize=10;fontStyle=2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="490" width="200" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_m5b" value="5b. findOpenPublicPatches() — filter out joinedPatchIds" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="495" y="520" as="geometry"><Array as="points"><mxPoint x="1125" y="520"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m5br" value="[Patch list] (excluding joined)" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1125" y="545" as="geometry"><Array as="points"><mxPoint x="495" y="545"/></Array></mxGeometry>
+        </mxCell>
+
+        <mxCell id="r_m6_note" value="6. Score each patch:&lt;br/&gt;affinity = catScore/100 × 1.0&lt;br/&gt;Filter: affinity &gt; 0&lt;br/&gt;Sort DESC · limit 10&lt;br/&gt;reason: 'matches your profile'" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="400" y="570" width="220" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="r_m7" value="7. [ScoredPatch list]" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="495" y="665" as="geometry"><Array as="points"><mxPoint x="285" y="665"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="r_m8_note" value="8. map ScoredPatch → PatchRecommendationResponse" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="690" width="320" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_m9" value="9. 200 OK — List&lt;PatchRecommendationResponse&gt;" style="endArrow=open;endFill=0;html=1;strokeColor=#6c8ebf;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="285" y="720" as="geometry"><Array as="points"><mxPoint x="95" y="720"/></Array></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <!-- ======================================================= -->
+  <!-- PAGE 4: GET /parches/search                             -->
+  <!-- ======================================================= -->
+  <diagram id="seq-search" name="4. GET /parches/search">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="stitle" value="GET /api/v1/parches/search — Filtered Search Sequence" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifeline Headers -->
+        <mxCell id="s_lf1h" value="Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="110" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_lf2h" value="SearchController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_lf3h" value="SearchPatches&lt;br/&gt;UseCaseImpl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_lf4h" value="PatchRepository&lt;br/&gt;(+Specification)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="50" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_lf5h" value="Membership&lt;br/&gt;Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="50" width="130" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_lf6h" value="PostgreSQL" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#ae4132;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="50" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Lifelines -->
+        <mxCell id="s_lf1l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry x="95" y="90" as="geometry"><Array as="points"><mxPoint x="95" y="950"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_lf2l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="290" y="90" as="geometry"><Array as="points"><mxPoint x="290" y="950"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_lf3l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry x="510" y="90" as="geometry"><Array as="points"><mxPoint x="510" y="950"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_lf4l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry x="730" y="90" as="geometry"><Array as="points"><mxPoint x="730" y="950"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_lf5l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry x="945" y="90" as="geometry"><Array as="points"><mxPoint x="945" y="950"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_lf6l" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#ae4132;" edge="1" parent="1">
+          <mxGeometry x="1145" y="100" as="geometry"><Array as="points"><mxPoint x="1145" y="950"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- Messages -->
+        <mxCell id="s_m1" value="1. GET /parches/search?q=futbol&amp;category=SPORTS&amp;userId=...&amp;page=0" style="endArrow=block;endFill=1;html=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="95" y="130" as="geometry"><Array as="points"><mxPoint x="290" y="130"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m2" value="2. search(SearchRequest, userId, page, size)" style="endArrow=block;endFill=1;html=1;strokeColor=#82b366;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="290" y="165" as="geometry"><Array as="points"><mxPoint x="510" y="165"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- searchPatches -->
+        <mxCell id="s_m3" value="3. searchPatches(SearchRequest, page, size)" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="510" y="200" as="geometry"><Array as="points"><mxPoint x="730" y="200"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m3_note" value="Build Specification from filters:&lt;br/&gt;q → ILIKE on title/description&lt;br/&gt;category / campusZone / status&lt;br/&gt;dateFrom / dateTo / maxGroupSize&lt;br/&gt;hasAvailableSpots" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;" vertex="1" parent="1">
+          <mxGeometry x="640" y="220" width="200" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_m3b" value="SELECT … WHERE [dynamic] ORDER BY start_time ASC LIMIT ? OFFSET ?" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="730" y="310" as="geometry"><Array as="points"><mxPoint x="1145" y="310"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m3r" value="[Patch page — sorted by startTime ASC]" style="endArrow=open;endFill=0;html=1;strokeColor=#d6b656;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1145" y="335" as="geometry"><Array as="points"><mxPoint x="730" y="335"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m3rr" value="[Patch list]" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="730" y="355" as="geometry"><Array as="points"><mxPoint x="510" y="355"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- countPatches -->
+        <mxCell id="s_m4" value="4. countPatches(SearchRequest)" style="endArrow=block;endFill=1;html=1;strokeColor=#d6b656;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="510" y="385" as="geometry"><Array as="points"><mxPoint x="730" y="385"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m4b" value="SELECT COUNT(*) WHERE [same dynamic filters]" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="730" y="410" as="geometry"><Array as="points"><mxPoint x="1145" y="410"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m4r" value="total count (long)" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1145" y="435" as="geometry"><Array as="points"><mxPoint x="510" y="435"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- membership check (batch) -->
+        <mxCell id="s_branch" value="[if userId present]  Batch membership check (N+1 eliminated):" style="text;html=1;strokeColor=none;fillColor=#e1d5e7;align=left;fontSize=10;fontStyle=2;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="460" width="380" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_m5" value="5. findActivePatchIds(userId, [patchId1, patchId2, ...])" style="endArrow=block;endFill=1;html=1;strokeColor=#9673a6;fontSize=10;" edge="1" parent="1">
+          <mxGeometry x="510" y="490" as="geometry"><Array as="points"><mxPoint x="945" y="490"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m5b" value="SELECT patch_id FROM patch_memberships WHERE user_id=? AND patch_id IN (?) AND status='ACTIVE'" style="endArrow=block;endFill=1;html=1;strokeColor=#ae4132;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="945" y="520" as="geometry"><Array as="points"><mxPoint x="1145" y="520"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m5br" value="Set&lt;UUID&gt; memberPatchIds  (1 query total)" style="endArrow=open;endFill=0;html=1;strokeColor=#9673a6;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="1145" y="545" as="geometry"><Array as="points"><mxPoint x="945" y="545"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m5r" value="Set&lt;UUID&gt;" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=9;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="945" y="565" as="geometry"><Array as="points"><mxPoint x="510" y="565"/></Array></mxGeometry>
+        </mxCell>
+
+        <!-- map to response -->
+        <mxCell id="s_m6_note" value="6. Map Patch → PatchSummaryResponse&lt;br/&gt;   isMember = memberPatchIds.contains(patch.id)&lt;br/&gt;   affinityScore = null (not scored in search)" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="400" y="590" width="280" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- build SearchResponse -->
+        <mxCell id="s_m7_note" value="7. Build SearchResponse:&lt;br/&gt;   results, total, page, size, totalPages" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="400" y="665" width="230" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s_m8" value="8. SearchResponse" style="endArrow=open;endFill=0;html=1;strokeColor=#82b366;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="510" y="730" as="geometry"><Array as="points"><mxPoint x="290" y="730"/></Array></mxGeometry>
+        </mxCell>
+        <mxCell id="s_m9" value="9. 200 OK — SearchResponse" style="endArrow=open;endFill=0;html=1;strokeColor=#6c8ebf;fontSize=10;dashed=1;" edge="1" parent="1">
+          <mxGeometry x="290" y="760" as="geometry"><Array as="points"><mxPoint x="95" y="760"/></Array></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+</mxfile>

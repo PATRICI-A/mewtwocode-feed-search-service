@@ -1,0 +1,274 @@
+<mxfile host="app.diagrams.net" modified="2026-05-07T00:00:00.000Z" version="21.0.0">
+  <diagram id="arch" name="Hexagonal Architecture">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== Layer background zones ===== -->
+        <mxCell id="zone_entry" value="Entry Points" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;verticalAlign=top;align=center;fontSize=13;fontStyle=1;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="200" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_app" value="Application Layer" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;verticalAlign=top;align=center;fontSize=13;fontStyle=1;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="240" y="20" width="310" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_domain" value="Domain Layer" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;verticalAlign=top;align=center;fontSize=13;fontStyle=1;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="570" y="20" width="310" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_infra" value="Infrastructure Layer" style="text;html=1;strokeColor=#d79b00;fillColor=#ffe6cc;verticalAlign=top;align=center;fontSize=13;fontStyle=1;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="900" y="20" width="330" height="900" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone_ext" value="External Systems" style="text;html=1;strokeColor=#ae4132;fillColor=#f8cecc;verticalAlign=top;align=center;fontSize=13;fontStyle=1;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="20" width="200" height="900" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Layer labels at top ===== -->
+        <mxCell id="lbl_entry" value="REST Controllers" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontStyle=2;fontColor=#003580;" vertex="1" parent="1">
+          <mxGeometry x="20" y="45" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_app" value="Use Cases · Services · DTOs · Mappers" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontStyle=2;fontColor=#1a3d1a;" vertex="1" parent="1">
+          <mxGeometry x="240" y="45" width="310" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_domain" value="Models · Ports (In/Out) · Enums" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontStyle=2;fontColor=#5a4500;" vertex="1" parent="1">
+          <mxGeometry x="570" y="45" width="310" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_infra" value="Adapters · JPA Repositories · Entities" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontStyle=2;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="900" y="45" width="330" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_ext" value="DB · Cache · Auth" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;fontStyle=2;fontColor=#6b1111;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="45" width="200" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ENTRY POINTS ===== -->
+        <mxCell id="c_feed_ctrl" value="FeedController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6d8ebf;fontColor=#ffffff;strokeColor=#4a6d9e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_feed_ctrl_detail" value="GET /feed/parches&lt;br/&gt;POST /feed/parches/{id}/interact" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="142" width="160" height="34" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_rec_ctrl" value="RecommendationController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6d8ebf;fontColor=#ffffff;strokeColor=#4a6d9e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="210" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_rec_ctrl_detail" value="GET /feed/recommended" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="252" width="160" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_search_ctrl" value="SearchController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6d8ebf;fontColor=#ffffff;strokeColor=#4a6d9e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_search_ctrl_detail" value="GET /parches/search" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=9;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="342" width="160" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="c_advice" value="GlobalExceptionHandler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4a6d9e;fontColor=#ffffff;strokeColor=#2c4d7e;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="160" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== APPLICATION LAYER ===== -->
+        <!-- Services -->
+        <mxCell id="lbl_svc" value="Services" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#1a3d1a;" vertex="1" parent="1">
+          <mxGeometry x="260" y="92" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_feed_svc" value="FeedService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#67ab9f;fontColor=#ffffff;strokeColor=#3d8a7e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="115" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_rec_svc" value="RecommendationService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#67ab9f;fontColor=#ffffff;strokeColor=#3d8a7e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="170" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_interact_svc" value="RegisterInteractionService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#67ab9f;fontColor=#ffffff;strokeColor=#3d8a7e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="225" width="160" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_search_uc" value="SearchPatchesUseCaseImpl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#67ab9f;fontColor=#ffffff;strokeColor=#3d8a7e;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="280" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- DTOs -->
+        <mxCell id="lbl_dto" value="DTOs" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#1a3d1a;" vertex="1" parent="1">
+          <mxGeometry x="260" y="345" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_dto_req" value="SearchRequest&lt;br/&gt;FeedFilterRequest&lt;br/&gt;InteractRequest" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9dc3a4;fontColor=#ffffff;strokeColor=#6a9e73;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="368" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_dto_resp" value="PatchSummaryResponse&lt;br/&gt;PatchRecommendationResponse&lt;br/&gt;SearchResponse" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9dc3a4;fontColor=#ffffff;strokeColor=#6a9e73;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="260" y="440" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Mapper -->
+        <mxCell id="c_mapper" value="PatchDomainMapper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9dc3a4;fontColor=#ffffff;strokeColor=#6a9e73;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="515" width="160" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== DOMAIN LAYER ===== -->
+        <!-- Ports In -->
+        <mxCell id="lbl_ports_in" value="Ports (In)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#5a4500;" vertex="1" parent="1">
+          <mxGeometry x="590" y="92" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_feed_uc" value="«interface»&lt;br/&gt;FeedUseCase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6c87a;fontColor=#3d2800;strokeColor=#b8960a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="115" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_interact_port" value="«interface»&lt;br/&gt;RegisterInteractionPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6c87a;fontColor=#3d2800;strokeColor=#b8960a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="170" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_rec_port" value="«interface»&lt;br/&gt;GetRecommendationsPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6c87a;fontColor=#3d2800;strokeColor=#b8960a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="225" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_search_port" value="«interface»&lt;br/&gt;SearchPatchesUseCase" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6c87a;fontColor=#3d2800;strokeColor=#b8960a;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="280" width="150" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Ports Out -->
+        <mxCell id="lbl_ports_out" value="Ports (Out)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#5a4500;" vertex="1" parent="1">
+          <mxGeometry x="590" y="345" width="90" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_patch_repo_port" value="«interface»&lt;br/&gt;PatchRepositoryPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4b04a;fontColor=#3d2800;strokeColor=#a07a00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="368" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_score_repo_port" value="«interface»&lt;br/&gt;UserCategoryScoreRepositoryPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4b04a;fontColor=#3d2800;strokeColor=#a07a00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="425" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_membership_port" value="«interface»&lt;br/&gt;MembershipRepositoryPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4b04a;fontColor=#3d2800;strokeColor=#a07a00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="482" width="150" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_inter_repo_port" value="«interface»&lt;br/&gt;FeedInteractionRepositoryPort" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4b04a;fontColor=#3d2800;strokeColor=#a07a00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="539" width="150" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Domain Models -->
+        <mxCell id="lbl_models" value="Domain Models" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#5a4500;" vertex="1" parent="1">
+          <mxGeometry x="590" y="600" width="100" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_models" value="Patch&lt;br/&gt;UserCategoryScore  ★&lt;br/&gt;PatchMembership&lt;br/&gt;FeedInteraction&lt;br/&gt;ScoredPatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c0a020;fontColor=#ffffff;strokeColor=#8a6e00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="623" width="150" height="84" as="geometry"/>
+        </mxCell>
+
+        <!-- Enums -->
+        <mxCell id="c_enums" value="PatchCategory&lt;br/&gt;CampusZone&lt;br/&gt;PatchStatus&lt;br/&gt;InteractionType" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c0a020;fontColor=#ffffff;strokeColor=#8a6e00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="718" width="150" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== INFRASTRUCTURE LAYER ===== -->
+        <!-- Adapters -->
+        <mxCell id="lbl_adapters" value="Adapters" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="920" y="92" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_patch_adapter" value="PatchRepositoryAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="115" width="190" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_score_adapter" value="UserCategoryScoreRepositoryAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="165" width="190" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_member_adapter" value="MembershipRepositoryAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="215" width="190" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_inter_adapter" value="FeedInteractionRepositoryAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="265" width="190" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- JPA Repos -->
+        <mxCell id="lbl_jpa" value="JPA Repositories" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="920" y="320" width="130" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_patch_jpa" value="PatchJpaRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6a000;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="343" width="190" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_score_jpa" value="UserCategoryScoreJpaRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6a000;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="383" width="190" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_member_jpa" value="PatchMembershipJpaRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6a000;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="423" width="190" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_inter_jpa" value="FeedInteractionJpaRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6a000;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="463" width="190" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Specification -->
+        <mxCell id="c_spec" value="PatchSpecification&lt;br/&gt;(Criteria API)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6a000;fontColor=#ffffff;strokeColor=#b07000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="503" width="190" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- JPA Entities -->
+        <mxCell id="lbl_entities" value="JPA Entities" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="920" y="556" width="90" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_entities" value="PatchEntity&lt;br/&gt;UserCategoryScoreEntity  ★&lt;br/&gt;PatchMembershipEntity&lt;br/&gt;FeedInteractionEntity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cc8000;fontColor=#ffffff;strokeColor=#995e00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="578" width="190" height="68" as="geometry"/>
+        </mxCell>
+
+        <!-- PatchEntityMapper -->
+        <mxCell id="c_entity_mapper" value="PatchEntityMapper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cc8000;fontColor=#ffffff;strokeColor=#995e00;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="656" width="190" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- Config -->
+        <mxCell id="lbl_config" value="Config" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontStyle=3;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="920" y="700" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_config" value="SecurityConfig&lt;br/&gt;SwaggerConfig&lt;br/&gt;RedisConfig&lt;br/&gt;WebConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cc8000;fontColor=#ffffff;strokeColor=#995e00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="720" width="190" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== EXTERNAL SYSTEMS ===== -->
+        <mxCell id="c_postgres" value="PostgreSQL&lt;br/&gt;(port 5432/5433)&lt;br/&gt;&lt;br/&gt;DB: m06_feed" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#c0392b;fontColor=#ffffff;strokeColor=#922b21;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="100" width="150" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_redis" value="Redis&lt;br/&gt;(port 6379)&lt;br/&gt;&lt;br/&gt;TTL: 5 min" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#c0392b;fontColor=#ffffff;strokeColor=#922b21;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="240" width="150" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="c_m01" value="M01 Auth Service&lt;br/&gt;(AWS Lambda)&lt;br/&gt;&lt;br/&gt;JWT Bearer tokens" style="shape=mxgraph.aws4.traditional_server;whiteSpace=wrap;html=1;fillColor=#c0392b;fontColor=#ffffff;strokeColor=#922b21;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="380" width="150" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== DEPENDENCY ARROWS ===== -->
+        <!-- Controllers → Services (implements) -->
+        <mxCell id="arr_feed_ctrl_svc" value="uses" style="endArrow=open;endFill=0;html=1;strokeColor=#3d8a7e;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_feed_ctrl" target="c_feed_svc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_rec_ctrl_svc" value="uses" style="endArrow=open;endFill=0;html=1;strokeColor=#3d8a7e;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_rec_ctrl" target="c_rec_svc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_search_ctrl_svc" value="uses" style="endArrow=open;endFill=0;html=1;strokeColor=#3d8a7e;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_search_ctrl" target="c_search_uc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Services → Ports Out -->
+        <mxCell id="arr_feed_svc_port" value="" style="endArrow=open;endFill=0;html=1;strokeColor=#a07a00;fontSize=9;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_feed_svc" target="c_patch_repo_port">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_interact_svc_port" value="" style="endArrow=open;endFill=0;html=1;strokeColor=#a07a00;fontSize=9;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_interact_svc" target="c_score_repo_port">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Adapters implement Ports -->
+        <mxCell id="arr_impl_patch" value="implements" style="endArrow=block;endFill=0;html=1;strokeColor=#a07a00;fontSize=9;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_patch_adapter" target="c_patch_repo_port">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_impl_score" value="implements" style="endArrow=block;endFill=0;html=1;strokeColor=#a07a00;fontSize=9;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_score_adapter" target="c_score_repo_port">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_impl_member" value="implements" style="endArrow=block;endFill=0;html=1;strokeColor=#a07a00;fontSize=9;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_member_adapter" target="c_membership_port">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Adapters → JPA -->
+        <mxCell id="arr_adapter_jpa1" value="" style="endArrow=open;endFill=0;html=1;strokeColor=#b07000;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_patch_adapter" target="c_patch_jpa">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_adapter_jpa2" value="" style="endArrow=open;endFill=0;html=1;strokeColor=#b07000;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_score_adapter" target="c_score_jpa">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- JPA → PostgreSQL -->
+        <mxCell id="arr_jpa_pg" value="" style="endArrow=open;endFill=0;html=1;strokeColor=#922b21;fontSize=9;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c_patch_jpa" target="c_postgres">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Legend ===== -->
+        <mxCell id="legend_arch" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br/&gt;★ New in this iteration&lt;br/&gt;→ Uses / depends on&lt;br/&gt;--▷ Implements interface&lt;br/&gt;Dashed = crosses layer boundary" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;spacingLeft=8;fontSize=10;rounded=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="530" width="200" height="110" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

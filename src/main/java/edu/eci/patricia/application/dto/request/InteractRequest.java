@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Cuerpo de la interacción del usuario con un parche")
+@Schema(description = "Request body for a user interaction with a patch")
 public class InteractRequest {
 
     @NotNull(message = "Action is required")

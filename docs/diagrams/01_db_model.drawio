@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" modified="2026-05-07T00:00:00.000Z" version="21.0.0">
+  <diagram id="db-model" name="DB Model">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== patches table ===== -->
+        <mxCell id="t_patches" value="patches" style="swimlane;fontStyle=1;align=center;startSize=26;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#001f3f;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="300" height="364" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c1" value="🔑 id : UUID  (PK)" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="t_patches">
+          <mxGeometry y="26" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c2" value="title : VARCHAR(100)  NOT NULL" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="52" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c3" value="description : TEXT" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="78" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c4" value="category : VARCHAR(50)  NOT NULL" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="104" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c5" value="campus_zone : VARCHAR(50)" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="130" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c6" value="start_time : TIMESTAMP" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="156" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c7" value="capacity : INT  NOT NULL" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="182" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c8" value="current_count : INT  DEFAULT 0" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="208" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c9" value="status : VARCHAR(20)  NOT NULL" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="234" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c10" value="is_public : BOOLEAN  DEFAULT true" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="260" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c11" value="creator_id : UUID" style="text;strokeColor=#6c8ebf;fillColor=#f8fbff;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="286" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_p_c12" value="creator_name : VARCHAR(100)" style="text;strokeColor=#6c8ebf;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_patches">
+          <mxGeometry y="312" width="300" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== patch_memberships table ===== -->
+        <mxCell id="t_memberships" value="patch_memberships" style="swimlane;fontStyle=1;align=center;startSize=26;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#1a3d1a;" vertex="1" parent="1">
+          <mxGeometry x="420" y="40" width="300" height="182" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_m_c1" value="🔑 id : UUID  (PK)" style="text;strokeColor=#82b366;fillColor=#f4fbf4;align=left;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="t_memberships">
+          <mxGeometry y="26" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_m_c2" value="🔗 patch_id : UUID  (FK → patches)" style="text;strokeColor=#82b366;fillColor=none;align=left;spacingLeft=8;fontSize=11;fontStyle=2;" vertex="1" parent="t_memberships">
+          <mxGeometry y="52" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_m_c3" value="user_id : UUID  NOT NULL" style="text;strokeColor=#82b366;fillColor=#f4fbf4;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_memberships">
+          <mxGeometry y="78" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_m_c4" value="status : VARCHAR(20)  [ACTIVE|INACTIVE]" style="text;strokeColor=#82b366;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_memberships">
+          <mxGeometry y="104" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_m_c5" value="created_at : TIMESTAMP  NOT NULL" style="text;strokeColor=#82b366;fillColor=#f4fbf4;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_memberships">
+          <mxGeometry y="130" width="300" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== feed_interactions table ===== -->
+        <mxCell id="t_interactions" value="feed_interactions" style="swimlane;fontStyle=1;align=center;startSize=26;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=12;fontColor=#3d2400;" vertex="1" parent="1">
+          <mxGeometry x="420" y="280" width="300" height="182" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_i_c1" value="🔑 id : UUID  (PK)" style="text;strokeColor=#d6b656;fillColor=#fffbf0;align=left;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="t_interactions">
+          <mxGeometry y="26" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_i_c2" value="user_id : UUID  NOT NULL" style="text;strokeColor=#d6b656;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_interactions">
+          <mxGeometry y="52" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_i_c3" value="🔗 patch_id : UUID  (FK → patches)" style="text;strokeColor=#d6b656;fillColor=#fffbf0;align=left;spacingLeft=8;fontSize=11;fontStyle=2;" vertex="1" parent="t_interactions">
+          <mxGeometry y="78" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_i_c4" value="action : VARCHAR(20)  [VIEW|JOIN|SKIP]" style="text;strokeColor=#d6b656;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_interactions">
+          <mxGeometry y="104" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_i_c5" value="created_at : TIMESTAMP  NOT NULL" style="text;strokeColor=#d6b656;fillColor=#fffbf0;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_interactions">
+          <mxGeometry y="130" width="300" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== user_category_scores table ===== -->
+        <mxCell id="t_scores" value="user_category_scores  ★ NEW" style="swimlane;fontStyle=1;align=center;startSize=26;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontColor=#2d0045;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="300" height="208" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_c1" value="🔑 id : UUID  (PK)" style="text;strokeColor=#9673a6;fillColor=#f9f5fc;align=left;spacingLeft=8;fontSize=11;fontStyle=1;" vertex="1" parent="t_scores">
+          <mxGeometry y="26" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_c2" value="user_id : UUID  NOT NULL  [UK]" style="text;strokeColor=#9673a6;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_scores">
+          <mxGeometry y="52" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_c3" value="category : VARCHAR(50)  NOT NULL  [UK]" style="text;strokeColor=#9673a6;fillColor=#f9f5fc;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_scores">
+          <mxGeometry y="78" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_c4" value="score_total : FLOAT  [0..100]" style="text;strokeColor=#9673a6;fillColor=none;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_scores">
+          <mxGeometry y="104" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_c5" value="last_updated : TIMESTAMP  NOT NULL" style="text;strokeColor=#9673a6;fillColor=#f9f5fc;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="t_scores">
+          <mxGeometry y="130" width="300" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="t_s_note" value="UK: (user_id, category)" style="text;strokeColor=none;fillColor=#f0e8f7;align=center;fontSize=10;fontStyle=2;fontColor=#6a1b9a;" vertex="1" parent="t_scores">
+          <mxGeometry y="156" width="300" height="26" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Scoring formula note ===== -->
+        <mxCell id="score_note" value="&lt;b&gt;Scoring formula (on each interaction):&lt;/b&gt;&lt;br/&gt;S_new = S_current × e&lt;sup&gt;(−0.01 × days)&lt;/sup&gt; + event_weight&lt;br/&gt;S_new = clamp(S_new, 0, 100)&lt;br/&gt;&lt;br/&gt;VIEW: +0.1 | JOIN: +1.0 | SKIP: −10.0" style="text;html=1;strokeColor=#9673a6;fillColor=#f9f5fc;align=left;verticalAlign=top;spacingLeft=8;fontSize=11;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="480" width="300" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== FK: patch_memberships → patches ===== -->
+        <mxCell id="fk_mem_patch" value="patch_id" style="endArrow=ERmany;startArrow=ERone;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;fontStyle=2;fontSize=10;" edge="1" parent="1" source="t_memberships" target="t_patches">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== FK: feed_interactions → patches ===== -->
+        <mxCell id="fk_int_patch" value="patch_id" style="endArrow=ERmany;startArrow=ERone;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;strokeColor=#d6b656;fontStyle=2;fontSize=10;" edge="1" parent="1" source="t_interactions" target="t_patches">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== Legend ===== -->
+        <mxCell id="legend" value="&lt;b&gt;Legend&lt;/b&gt;&lt;br/&gt;🔑 Primary Key&lt;br/&gt;🔗 Foreign Key&lt;br/&gt;[UK] Unique Key&lt;br/&gt;★ NEW in this iteration" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;spacingLeft=8;fontSize=11;rounded=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="780" y="40" width="200" height="120" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
