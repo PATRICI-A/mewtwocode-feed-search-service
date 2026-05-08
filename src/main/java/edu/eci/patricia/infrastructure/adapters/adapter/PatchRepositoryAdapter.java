@@ -9,6 +9,7 @@ import edu.eci.patricia.infrastructure.adapters.persistence.mapper.PatchEntityMa
 import edu.eci.patricia.infrastructure.adapters.persistence.repository.PatchJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class PatchRepositoryAdapter implements PatchRepositoryPort {
 
     @Override
     public List<Patch> searchPatches(SearchRequest request, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "startTime"));
         return jpaRepository.findAll(PatchSpecification.fromRequest(request), pageable)
                 .stream()
                 .map(mapper::toDomain)

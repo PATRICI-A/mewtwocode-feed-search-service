@@ -1,15 +1,13 @@
 package edu.eci.patricia.application.service;
 
-import edu.eci.patricia.domain.model.FeedInteraction;
 import edu.eci.patricia.domain.model.Patch;
-import edu.eci.patricia.domain.model.UserInterest;
+import edu.eci.patricia.domain.model.UserCategoryScore;
 import edu.eci.patricia.domain.model.enums.CampusZone;
-import edu.eci.patricia.domain.model.enums.InteractionType;
 import edu.eci.patricia.domain.model.enums.PatchCategory;
 import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.FeedInteractionRepositoryPort;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
-import edu.eci.patricia.domain.ports.out.UserInterestRepositoryPort;
+import edu.eci.patricia.domain.ports.out.UserCategoryScoreRepositoryPort;
 import edu.eci.patricia.domain.valueobjects.ScoredPatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,15 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RecommendationServiceTest {
 
-    @Mock private PatchRepositoryPort patchRepository;
-    @Mock private UserInterestRepositoryPort interestRepository;
-    @Mock private FeedInteractionRepositoryPort interactionRepository;
+    @Mock private PatchRepositoryPort             patchRepository;
+    @Mock private UserCategoryScoreRepositoryPort categoryScoreRepository;
+    @Mock private FeedInteractionRepositoryPort   interactionRepository;
 
     private RecommendationService service;
 
@@ -40,14 +37,13 @@ class RecommendationServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new RecommendationService(patchRepository, interestRepository, interactionRepository);
+        service = new RecommendationService(patchRepository, categoryScoreRepository, interactionRepository);
     }
 
     @Test
-    void retornaListaVaciaCuandoNoHayCandidatos() {
-        // Usuario nuevo (sin intereses ni historial) → popularFallback → findPopularPatches → vacío
-        when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+    void returnsEmptyListWhenNoCandidates() {
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
@@ -55,11 +51,12 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void puntajeAltoSiCategoriaCoincideConInteresDelUsuario() {
+    void highScoreWhenCategoryMatchesUserScore() {
+        // catScore = 40 → 40/100 = 0.40
         Patch patch = buildPatch(UUID.randomUUID(), PatchCategory.GAMING);
 
-        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("GAMING")));
-        when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.GAMING, 40f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
 
@@ -67,16 +64,16 @@ class RecommendationServiceTest {
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.4f);
-        assertThat(result.get(0).getReason()).contains("intereses");
+        assertThat(result.get(0).getReason()).contains("profile");
     }
 
     @Test
-    void excluyePatchesDondeElUsuarioHizoJoin() {
+    void excludesPatchesWhereUserJoined() {
         UUID patchId = UUID.randomUUID();
         Patch patch = buildPatch(patchId, PatchCategory.STUDY);
 
-        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("STUDY")));
-        when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.STUDY, 40f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Set.of(patchId));
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
 
@@ -86,14 +83,14 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void limiteMaximoDiezRecomendaciones() {
+    void limitsToTenRecommendations() {
         List<Patch> patches = new java.util.ArrayList<>();
         for (int i = 0; i < 15; i++) {
             patches.add(buildPatch(UUID.randomUUID(), PatchCategory.SPORTS));
         }
 
-        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("SPORTS")));
-        when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.SPORTS, 40f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(patches);
 
@@ -103,41 +100,28 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void aplicaPenalizacionPorSkipEnMismaCategoria() {
-        UUID patchInteractuado = UUID.randomUUID();
-        UUID patchCandidato = UUID.randomUUID();
+    void scoreReflectsCategoryScoreValue() {
+        // catScore = 30 → 30/100 = 0.30
+        Patch candidate = buildPatch(UUID.randomUUID(), PatchCategory.FOOD);
 
-        Patch patchVisto = buildPatch(patchInteractuado, PatchCategory.FOOD);
-        Patch candidato = buildPatch(patchCandidato, PatchCategory.FOOD);
-
-        FeedInteraction skip = FeedInteraction.builder()
-                .id(UUID.randomUUID())
-                .userId(userId)
-                .patchId(patchInteractuado)
-                .action(InteractionType.SKIP)
-                .interactedAt(LocalDateTime.now())
-                .build();
-
-        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("FOOD")));
-        when(interactionRepository.findByUserId(userId)).thenReturn(List.of(skip));
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.FOOD, 30f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
-        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
-        when(patchRepository.findByIds(any())).thenReturn(List.of(patchVisto));
+        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidate));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
-        // 0.4 (interest match) - 0.1 (un skip) = 0.3
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.3f);
     }
 
     @Test
-    void excluyePatchesConScoreCeroONegativo() {
-        // Usuario con interés en SPORTS, parche CULTURE → score 0 → excluido
+    void excludesPatchesWithZeroOrNegativeScore() {
+        // User has score for SPORTS, patch is CULTURE → catScore = 0 → excluded
         Patch patch = buildPatch(UUID.randomUUID(), PatchCategory.CULTURE);
 
-        when(interestRepository.findByUserId(userId)).thenReturn(List.of(buildInterest("SPORTS")));
-        when(interactionRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.SPORTS, 40f)));
         when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
         when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(patch));
 
@@ -147,33 +131,20 @@ class RecommendationServiceTest {
     }
 
     @Test
-    void sumaScorePorJoinEnMismaCategoria() {
-        UUID patchInteractuado = UUID.randomUUID();
-        UUID patchCandidato = UUID.randomUUID();
+    void lowScoreWithMinimumCategoryScore() {
+        // catScore = 15 → 15/100 = 0.15
+        Patch candidate = buildPatch(UUID.randomUUID(), PatchCategory.GAMING);
 
-        Patch patchUnido = buildPatch(patchInteractuado, PatchCategory.GAMING);
-        Patch candidato = buildPatch(patchCandidato, PatchCategory.GAMING);
-
-        FeedInteraction join = FeedInteraction.builder()
-                .id(UUID.randomUUID())
-                .userId(userId)
-                .patchId(patchInteractuado)
-                .action(InteractionType.JOIN)
-                .interactedAt(LocalDateTime.now())
-                .build();
-
-        when(interestRepository.findByUserId(userId)).thenReturn(Collections.emptyList());
-        when(interactionRepository.findByUserId(userId)).thenReturn(List.of(join));
-        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Set.of(patchInteractuado));
-        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidato));
-        when(patchRepository.findByIds(any())).thenReturn(List.of(patchUnido));
+        when(categoryScoreRepository.findByUserId(userId)).thenReturn(
+                List.of(buildCategoryScore(PatchCategory.GAMING, 15f)));
+        when(interactionRepository.findJoinedPatchIds(userId)).thenReturn(Collections.emptySet());
+        when(patchRepository.findOpenPublicPatches()).thenReturn(List.of(candidate));
 
         List<ScoredPatch> result = service.getRecommendations(userId);
 
-        // 0.15 por un join en la misma categoria
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getAffinityScore()).isEqualTo(0.15f);
-        assertThat(result.get(0).getReason()).contains("participado");
+        assertThat(result.get(0).getReason()).contains("profile");
     }
 
     private Patch buildPatch(UUID id, PatchCategory category) {
@@ -192,12 +163,13 @@ class RecommendationServiceTest {
                 .build();
     }
 
-    private UserInterest buildInterest(String tag) {
-        return UserInterest.builder()
+    private UserCategoryScore buildCategoryScore(PatchCategory category, float score) {
+        return UserCategoryScore.builder()
                 .id(UUID.randomUUID())
                 .userId(userId)
-                .interestingTag(tag)
-                .createdAt(LocalDateTime.now())
+                .category(category)
+                .scoreTotal(score)
+                .lastUpdated(LocalDateTime.now())
                 .build();
     }
 }

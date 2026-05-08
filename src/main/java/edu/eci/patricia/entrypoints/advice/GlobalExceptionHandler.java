@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .findFirst()
-                .orElse("Validación fallida");
+                .orElse("Validation failed");
         return error("VALIDATION_ERROR", message, HttpStatus.BAD_REQUEST);
     }
 
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleUnexpected(Exception ex) {
-        return error("INTERNAL_ERROR", "Error inesperado en el servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        return error("INTERNAL_ERROR", "Unexpected server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<Map<String, Object>> error(String type, String message, HttpStatus status) {

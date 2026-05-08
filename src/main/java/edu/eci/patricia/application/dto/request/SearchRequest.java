@@ -17,29 +17,30 @@ import java.time.LocalDate;
 @Builder
 public class SearchRequest {
 
-    @Size(min = 2, message = "El término de búsqueda debe tener al menos 2 caracteres")
-    @Schema(description = "Texto a buscar en título y descripción (mínimo 2 caracteres)", example = "fútbol")
+    @Size(min = 2, message = "Search term must be at least 2 characters")
+    @Schema(description = "Text to search in title and description (min 2 characters)", example = "football")
     private String q;
 
-    @Schema(description = "Categoría del parche", example = "SPORTS")
+    @Schema(description = "Patch category", example = "SPORTS")
     private PatchCategory category;
-    @Schema(description = "Zona del campus", example = "CAFETERIA")
+
+    @Schema(description = "Campus zone", example = "CAFETERIA")
     private CampusZone campusZone;
 
-    @Schema(description = "Estado del parche", example = "OPEN")
+    @Schema(description = "Patch status", example = "OPEN")
     private PatchStatus status;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Schema(description = "Fecha inicio del rango (inclusive)", example = "2025-06-01")
+    @Schema(description = "Start date of range (inclusive)", example = "2025-06-01")
     private LocalDate dateFrom;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Schema(description = "Fecha fin del rango (inclusive)", example = "2025-06-30")
+    @Schema(description = "End date of range (inclusive)", example = "2025-06-30")
     private LocalDate dateTo;
 
-    @Schema(description = "Capacidad máxima del grupo", example = "10")
+    @Schema(description = "Maximum group capacity", example = "10")
     private Integer maxGroupSize;
 
-    @Schema(description = "Solo parches con cupos disponibles", example = "true")
+    @Schema(description = "Only patches with available spots", example = "true")
     private Boolean hasAvailableSpots;
 }

@@ -19,7 +19,7 @@ public class PatchDomainMapper {
                 .currentCount(patch.getCurrentCount())
                 .status(patch.getStatus())
                 .isPublic(patch.getIsPublic())
-                .creatorName("Usuario desconocido")
+                .creatorName("Unknown")
                 .affinityScore(affinityScore)
                 .userIsMember(userIsMember)
                 .build();

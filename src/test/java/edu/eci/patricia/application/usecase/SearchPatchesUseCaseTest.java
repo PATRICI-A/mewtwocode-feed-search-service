@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +61,6 @@ class SearchPatchesUseCaseTest {
 
     @Test
     void execute_ShouldReturnFilteredPatches() {
-        // Arrange
         SearchRequest request = SearchRequest.builder()
                 .q("Futbol")
                 .category(PatchCategory.SPORTS)
@@ -72,14 +72,14 @@ class SearchPatchesUseCaseTest {
                 .build();
 
         when(patchRepository.countPatches(any(SearchRequest.class))).thenReturn(1L);
-        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt())).thenReturn(List.of(samplePatch));
-        when(membershipRepository.existsActiveMembership(eq(samplePatch.getId()), eq(userId))).thenReturn(false);
+        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt()))
+                .thenReturn(List.of(samplePatch));
+        when(membershipRepository.findActivePatchIds(eq(userId), anyList()))
+                .thenReturn(Set.of());
         when(mapper.toResponse(eq(samplePatch), anyBoolean(), any())).thenReturn(responseDto);
 
-        // Act
         SearchResponse result = searchPatchesUseCase.execute(userId, request, 0, 10);
 
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.getResults().size());
         assertEquals("Torneo de Futbol", result.getResults().get(0).getTitle());
@@ -87,15 +87,33 @@ class SearchPatchesUseCaseTest {
 
     @Test
     void execute_WithEmptyResults_ShouldReturnEmptyList() {
-        // Arrange
         SearchRequest request = SearchRequest.builder().q("NonExistent").build();
         when(patchRepository.countPatches(any(SearchRequest.class))).thenReturn(0L);
-        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt())).thenReturn(List.of());
+        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt()))
+                .thenReturn(List.of());
 
-        // Act
         SearchResponse result = searchPatchesUseCase.execute(userId, request, 0, 10);
 
-        // Assert
         assertTrue(result.getResults().isEmpty());
+    }
+
+    @Test
+    void execute_WithNullUserId_ShouldReturnResultsWithoutMembership() {
+        SearchRequest request = SearchRequest.builder().q("Futbol").build();
+
+        PatchSummaryResponse responseDto = PatchSummaryResponse.builder()
+                .id(samplePatch.getId())
+                .title(samplePatch.getTitle())
+                .build();
+
+        when(patchRepository.countPatches(any(SearchRequest.class))).thenReturn(1L);
+        when(patchRepository.searchPatches(any(SearchRequest.class), anyInt(), anyInt()))
+                .thenReturn(List.of(samplePatch));
+        when(mapper.toResponse(eq(samplePatch), eq(false), any())).thenReturn(responseDto);
+
+        SearchResponse result = searchPatchesUseCase.execute(null, request, 0, 10);
+
+        assertNotNull(result);
+        assertEquals(1, result.getResults().size());
     }
 }
