@@ -615,7 +615,7 @@ POST /api/v1/feed/770e8400-e29b-41d4-a716-446655440000/join?userId=550e8400-...
 
 </div>
 
-#### 📋 Tabla: `feed_interactions`
+####  Tabla: `feed_interactions`
 
 <div align="center">
 
