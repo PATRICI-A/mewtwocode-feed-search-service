@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 /**
- * Formato estándar de error del equipo:
- * { "error": "TIPO_ERROR", "message": "descripción legible", "status": 4xx }
+ * Standard error format: { "error": "ERROR_TYPE", "message": "human-readable", "status": 4xx }
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {

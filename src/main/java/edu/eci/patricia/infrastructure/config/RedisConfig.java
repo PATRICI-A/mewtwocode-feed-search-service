@@ -18,8 +18,6 @@ import java.time.Duration;
 @ConditionalOnBean(RedisConnectionFactory.class)
 public class RedisConfig {
 
-    // TTL de 5 minutos para recomendaciones (prefijo "rec:")
-    // según especificación del módulo M06
     private static final Duration RECOMMENDATIONS_TTL = Duration.ofMinutes(5);
 
     @Bean

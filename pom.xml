@@ -105,6 +105,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<!-- Auto-activate 'local' profile for spring-boot:run (H2 + port 8081).
+					     Docker does not use this plugin, so Docker keeps using application.properties (port 8080). -->
+					<profiles>
+						<profile>local</profile>
+					</profiles>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/feed")
-@Tag(name = "Feed", description = "Feed personalizado de parches")
+@Tag(name = "Feed", description = "Personalized patch feed")
 public class JoinPatchController {
 
     private final JoinPatchUseCase joinPatchUseCase;
@@ -22,15 +22,15 @@ public class JoinPatchController {
     }
 
     @Operation(
-            summary = "Unirse a un parche desde el feed ",
-            description = "Pone al usuario a un parche público con cupo disponible"
+            summary = "Join a patch from the feed",
+            description = "Adds the authenticated user to a public patch that has available spots."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario unido exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Parche no encontrado"),
-            @ApiResponse(responseCode = "409", description = "El usuario ya es miembro"),
-            @ApiResponse(responseCode = "422", description = "Parche lleno o cerrado"),
-            @ApiResponse(responseCode = "401", description = "JWT inválido o ausente")
+            @ApiResponse(responseCode = "200", description = "User joined the patch successfully"),
+            @ApiResponse(responseCode = "404", description = "Patch not found"),
+            @ApiResponse(responseCode = "409", description = "User is already a member of this patch"),
+            @ApiResponse(responseCode = "422", description = "Patch is full or not open"),
+            @ApiResponse(responseCode = "401", description = "Invalid or missing JWT")
     })
     @PostMapping("/{patchId}/join")
     public ResponseEntity<Void> joinPatch(
