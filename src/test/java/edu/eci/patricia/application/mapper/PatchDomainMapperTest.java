@@ -45,7 +45,7 @@ class PatchDomainMapperTest {
         assertThat(response.getCurrentCount()).isEqualTo(4);
         assertThat(response.getStatus()).isEqualTo(PatchStatus.OPEN);
         assertThat(response.getIsPublic()).isTrue();
-        assertThat(response.getCreatorName()).isEqualTo("Usuario desconocido");
+        assertThat(response.getCreatorName()).isEqualTo("Unknown");
         assertThat(response.getAffinityScore()).isEqualTo(0.75f);
         assertThat(response.getUserIsMember()).isTrue();
     }

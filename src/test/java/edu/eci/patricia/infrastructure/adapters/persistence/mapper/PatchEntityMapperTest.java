@@ -63,6 +63,48 @@ class PatchEntityMapperTest {
     }
 
     @Test
+    void toEntityMapeaPatchDeDominio() {
+        UUID id = UUID.randomUUID();
+        UUID creatorId = UUID.randomUUID();
+        LocalDateTime start = LocalDateTime.now().plusHours(2);
+        LocalDateTime end = start.plusHours(1);
+        LocalDateTime createdAt = LocalDateTime.now();
+        Patch patch = Patch.builder()
+                .id(id)
+                .title("Cafe")
+                .description("Charla")
+                .category(PatchCategory.FOOD)
+                .location("Bloque A")
+                .campusZone(CampusZone.CAFETERIA)
+                .startTime(start)
+                .endTime(end)
+                .capacity(8)
+                .currentCount(3)
+                .status(PatchStatus.OPEN)
+                .creatorId(creatorId)
+                .isPublic(true)
+                .createdTime(createdAt)
+                .build();
+
+        PatchEntity entity = mapper.toEntity(patch);
+
+        assertThat(entity.getId()).isEqualTo(id);
+        assertThat(entity.getTitle()).isEqualTo("Cafe");
+        assertThat(entity.getDescription()).isEqualTo("Charla");
+        assertThat(entity.getLocation()).isEqualTo("Bloque A");
+        assertThat(entity.getCategory()).isEqualTo(PatchCategory.FOOD);
+        assertThat(entity.getCampusZone()).isEqualTo(CampusZone.CAFETERIA);
+        assertThat(entity.getStartTime()).isEqualTo(start);
+        assertThat(entity.getEndTime()).isEqualTo(end);
+        assertThat(entity.getCapacity()).isEqualTo(8);
+        assertThat(entity.getCurrentCount()).isEqualTo(3);
+        assertThat(entity.getStatus()).isEqualTo(PatchStatus.OPEN);
+        assertThat(entity.getCreatorId()).isEqualTo(creatorId);
+        assertThat(entity.getIsPublic()).isTrue();
+        assertThat(entity.getCreatedAt()).isEqualTo(createdAt);
+    }
+
+    @Test
     void toDomainMapeaUserInterestEntity() {
         UUID id = UUID.randomUUID();
         UUID userId = UUID.randomUUID();

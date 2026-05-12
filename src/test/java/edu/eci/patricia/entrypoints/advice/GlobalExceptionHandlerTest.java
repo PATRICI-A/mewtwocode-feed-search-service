@@ -21,7 +21,7 @@ class GlobalExceptionHandlerTest {
         UUID patchId = UUID.randomUUID();
         ResponseEntity<Map<String, Object>> response = handler.handleNotFound(new PatchNotFoundException(patchId));
 
-        assertError(response, HttpStatus.NOT_FOUND, "PATCH_NOT_FOUND", "Parche no encontrado: " + patchId);
+        assertError(response, HttpStatus.NOT_FOUND, "PATCH_NOT_FOUND", "Patch not found: " + patchId);
     }
 
     @Test
@@ -42,7 +42,7 @@ class GlobalExceptionHandlerTest {
     void handleUnexpectedOcultaDetalleInterno() {
         ResponseEntity<Map<String, Object>> response = handler.handleUnexpected(new RuntimeException("boom"));
 
-        assertError(response, HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Error inesperado en el servidor");
+        assertError(response, HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Unexpected server error");
     }
 
     private void assertError(ResponseEntity<Map<String, Object>> response,

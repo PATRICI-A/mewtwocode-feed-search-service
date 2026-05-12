@@ -70,10 +70,12 @@ class RepositoryAdapterTest {
         PatchEntity second = patchEntity(UUID.randomUUID(), PatchCategory.FOOD);
         PatchRepositoryAdapter adapter = new PatchRepositoryAdapter(patchJpaRepository, mapper);
         when(patchJpaRepository.findAllById(List.of(first.getId(), second.getId()))).thenReturn(List.of(first, second));
+        when(patchJpaRepository.findById(first.getId())).thenReturn(Optional.of(first));
         when(patchJpaRepository.findTop10ByStatusAndIsPublicOrderByCurrentCountDesc(PatchStatus.OPEN, true))
                 .thenReturn(List.of(first, second));
 
         assertThat(adapter.findByIds(List.of(first.getId(), second.getId()))).hasSize(2);
+        assertThat(adapter.findById(first.getId())).isPresent();
         assertThat(adapter.findPopularPatches(1)).extracting(Patch::getId).containsExactly(first.getId());
     }
 

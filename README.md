@@ -882,12 +882,21 @@ mewtwocode-feed-search-service/
 
 ## 11. Ejecución del Proyecto
 
+### Modos de ejecucion independientes
+
+El proyecto queda preparado para correr de dos formas sin depender una de la otra:
+
+| Modo | Comando | Base de datos / cache | Swagger |
+|---|---|---|---|
+| Backend local sin Docker | `./mvnw spring-boot:run` | H2 en memoria, Redis desactivado | `http://localhost:8081/swagger-ui.html` |
+| Docker Compose completo | `docker compose up --build` | PostgreSQL y Redis dentro de Docker | `http://localhost:8080/swagger-ui.html` |
+
+En modo local no hace falta tener Docker corriendo. En modo Docker, el contenedor de la app usa el perfil `docker` y se conecta a los servicios `postgres` y `redis` del mismo `docker-compose.yml`; no depende de que exista un backend corriendo por fuera.
+
 ### Prerrequisitos
 - **Java 21**
 - **Maven 3.9+**
-- **Docker & Docker Compose**
-- **PostgreSQL** (si ejecutas localmente sin Docker)
-- **Redis** (si ejecutas localmente sin Docker)
+- **Docker & Docker Compose** solo si vas a ejecutar el modo Docker
 
 ###  Opción 1: Ejecución Local (Maven)
 
@@ -895,11 +904,8 @@ mewtwocode-feed-search-service/
 # 1. Clonar repositorio
 git clone https://github.com/<org>/mewtwocode-feed-search-service.git
 
-# 2. Levantar base de datos y Redis
-docker compose up -d postgres redis
-
-# 3. Ejecutar con perfil local
-./mvnw spring-boot:run -Dspring.profiles.active=local
+# 2. Ejecutar el backend directamente
+./mvnw spring-boot:run
 ```
 
 **URL Local:** `http://localhost:8081`
