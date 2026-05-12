@@ -40,11 +40,10 @@ public class JoinPatchService implements JoinPatchUseCase {
 
 
         if (!patch.getIsPublic())
-            throw new BusinessRuleException("No puedes unirte a un parche privado.");
-
+            throw new BusinessRuleException("Cannot join a private patch.");
 
         if (patch.getStatus() != PatchStatus.OPEN)
-            throw new BusinessRuleException("El parche no está abierto. Estado: " + patch.getStatus());
+            throw new BusinessRuleException("Patch is not open. Current status: " + patch.getStatus());
 
 
         if (patch.getCurrentCount() >= patch.getCapacity())

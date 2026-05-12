@@ -105,6 +105,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<!-- Auto-activate 'local' profile for spring-boot:run (H2 + port 8081).
+					     Docker does not use this plugin, so Docker keeps using application.properties (port 8080). -->
+					<profiles>
+						<profile>local</profile>
+					</profiles>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -169,6 +174,17 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/PatriciaApplication.class</exclude>
+						<exclude>**/application/dto/**</exclude>
+						<exclude>**/domain/ports/**</exclude>
+						<exclude>**/entrypoints/rest/**</exclude>
+						<exclude>**/infrastructure/config/**</exclude>
+						<exclude>**/infrastructure/adapters/persistence/entity/**</exclude>
+						<exclude>**/infrastructure/adapters/persistence/repository/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -178,6 +194,25 @@
 						<id>report</id>
 						<phase>verify</phase>
 						<goals><goal>report</goal></goals>
+					</execution>
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals><goal>check</goal></goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.85</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
