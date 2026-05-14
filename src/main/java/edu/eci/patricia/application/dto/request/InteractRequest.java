@@ -5,6 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+/**
+ * Data Transfer Object that carries the type of interaction a user performed on a patch.
+ * The action determines the category-score delta applied by {@code RegisterInteractionService}:
+ * VIEW (+0.1), JOIN (+1.0), or SKIP (-10.0).
+ */
 @Getter
 @Setter
 @NoArgsConstructor

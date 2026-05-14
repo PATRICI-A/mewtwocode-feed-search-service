@@ -8,6 +8,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object that carries optional filter criteria for the personalized feed endpoint.
+ * All fields are optional; when omitted the feed returns all open public patches ranked by relevance.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

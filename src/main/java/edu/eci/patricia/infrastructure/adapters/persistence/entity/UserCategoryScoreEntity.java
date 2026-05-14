@@ -7,6 +7,14 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity representing the accumulated affinity score of a user for a patch category,
+ * stored in the {@code user_category_scores} table.
+ *
+ * <p>A unique constraint on {@code (user_id, category)} guarantees at most one score record per
+ * user per category. Scores are updated by the interaction registration use case using a
+ * time-decay formula and are clamped between 0 and 100.</p>
+ */
 @Entity
 @Table(name = "user_category_scores", uniqueConstraints = {
         @UniqueConstraint(name = "uk_user_category", columnNames = {"user_id", "category"})

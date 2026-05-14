@@ -8,9 +8,22 @@ import edu.eci.patricia.infrastructure.adapters.persistence.entity.PatchEntity;
 import edu.eci.patricia.infrastructure.adapters.persistence.entity.UserInterestEntity;
 import org.springframework.stereotype.Component;
 
+/**
+ * Spring component responsible for bidirectional mapping between JPA persistence entities
+ * and domain model objects for patches, user interests, and feed interactions.
+ *
+ * <p>Centralises all entity-to-domain and domain-to-entity conversions so that adapters
+ * remain free of mapping logic.</p>
+ */
 @Component
 public class PatchEntityMapper {
 
+    /**
+     * Converts a {@link PatchEntity} persistence entity to a {@link Patch} domain object.
+     *
+     * @param entity the entity to convert; must not be {@code null}
+     * @return the corresponding {@link Patch} domain object
+     */
     public Patch toDomain(PatchEntity entity) {
         return Patch.builder()
                 .id(entity.getId())
@@ -30,6 +43,12 @@ public class PatchEntityMapper {
                 .build();
     }
 
+    /**
+     * Converts a {@link Patch} domain object to a {@link PatchEntity} persistence entity.
+     *
+     * @param patch the domain object to convert; must not be {@code null}
+     * @return the corresponding {@link PatchEntity} ready for persistence
+     */
     public PatchEntity toEntity(Patch patch) {
         return PatchEntity.builder()
                 .id(patch.getId())
@@ -49,6 +68,12 @@ public class PatchEntityMapper {
                 .build();
     }
 
+    /**
+     * Converts a {@link UserInterestEntity} persistence entity to a {@link UserInterest} domain object.
+     *
+     * @param entity the entity to convert; must not be {@code null}
+     * @return the corresponding {@link UserInterest} domain object
+     */
     public UserInterest toDomain(UserInterestEntity entity) {
         return UserInterest.builder()
                 .id(entity.getId())
@@ -58,6 +83,12 @@ public class PatchEntityMapper {
                 .build();
     }
 
+    /**
+     * Converts a {@link FeedInteractionEntity} persistence entity to a {@link FeedInteraction} domain object.
+     *
+     * @param entity the entity to convert; must not be {@code null}
+     * @return the corresponding {@link FeedInteraction} domain object
+     */
     public FeedInteraction toDomain(FeedInteractionEntity entity) {
         return FeedInteraction.builder()
                 .id(entity.getId())

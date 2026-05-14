@@ -16,6 +16,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Application service that handles the "join patch" use case.
+ *
+ * <p>Before creating a membership the service enforces the following business rules in order:
+ * <ol>
+ *   <li>The patch must exist.</li>
+ *   <li>The patch must be public.</li>
+ *   <li>The patch status must be {@code OPEN}.</li>
+ *   <li>The patch must not have reached its capacity.</li>
+ *   <li>The user must not already be an active member.</li>
+ * </ol>
+ *
+ * <p>Upon successful validation a new {@link PatchMembership} with status {@code ACTIVE} is
+ * persisted and the patch's {@code currentCount} is incremented. If the count reaches the
+ * capacity the patch status is automatically updated to {@code FULL}.
+ */
 @Service
 public class JoinPatchService implements JoinPatchUseCase {
 
@@ -23,6 +39,13 @@ public class JoinPatchService implements JoinPatchUseCase {
     private final MembershipRepositoryPort membershipRepository;
     private final PatchWriteRepositoryPort patchWriteRepository;
 
+    /**
+     * Constructs a {@code JoinPatchService} with all required collaborators.
+     *
+     * @param patchRepository      port for reading patch data
+     * @param membershipRepository port for checking existing active memberships
+     * @param patchWriteRepository port for persisting new memberships and updating patch state
+     */
     public JoinPatchService(PatchRepositoryPort patchRepository,
                             MembershipRepositoryPort membershipRepository,
                             PatchWriteRepositoryPort patchWriteRepository) {
@@ -31,6 +54,16 @@ public class JoinPatchService implements JoinPatchUseCase {
         this.patchWriteRepository = patchWriteRepository;
     }
 
+    /**
+     * Validates all business rules and joins the specified user to the patch.
+     *
+     * @param patchId the identifier of the patch to join
+     * @param userId  the identifier of the user who wants to join
+     * @throws PatchNotFoundException  if no patch with the given {@code patchId} exists
+     * @throws BusinessRuleException   if the patch is private or not in {@code OPEN} status
+     * @throws PatchFullException      if the patch has already reached its maximum capacity
+     * @throws AlreadyMemberException  if the user is already an active member of the patch
+     */
     @Override
     public void execute(UUID patchId, UUID userId) {
 

@@ -9,10 +9,41 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Factory class for building JPA {@link Specification} predicates used to dynamically filter
+ * {@link PatchEntity} records based on the criteria supplied in a {@link SearchRequest}.
+ *
+ * <p>The class is non-instantiable; use the static factory method {@link #fromRequest(SearchRequest)}.</p>
+ */
 public class PatchSpecification {
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private PatchSpecification() {}
 
+    /**
+     * Builds a {@link Specification} that combines all non-null search criteria from the request
+     * into a single AND predicate. The {@code isPublic} flag is always enforced regardless of
+     * other criteria.
+     *
+     * <p>Supported filters:
+     * <ul>
+     *   <li>{@code q} — case-insensitive LIKE match on title and description</li>
+     *   <li>{@code category} — exact match on patch category</li>
+     *   <li>{@code campusZone} — exact match on campus zone</li>
+     *   <li>{@code status} — exact match on patch status</li>
+     *   <li>{@code dateFrom} — patches starting on or after this date (inclusive)</li>
+     *   <li>{@code dateTo} — patches starting on or before this date (inclusive, end of day)</li>
+     *   <li>{@code maxGroupSize} — patches whose capacity is at most this value</li>
+     *   <li>{@code hasAvailableSpots} — patches where {@code currentCount < capacity}</li>
+     * </ul>
+     * </p>
+     *
+     * @param request the search request containing the filter criteria; must not be {@code null}
+     * @return a {@link Specification} instance that can be passed to
+     *         {@link org.springframework.data.jpa.repository.JpaSpecificationExecutor}
+     */
     public static Specification<PatchEntity> fromRequest(SearchRequest request) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

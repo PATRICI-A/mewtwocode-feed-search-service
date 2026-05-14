@@ -14,6 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * REST controller that exposes the patch search and filtering endpoint under {@code /api/v1/parches}.
+ *
+ * <p>Supports dynamic, multi-criteria search of public patches with optional keyword matching,
+ * category and campus-zone filters, date range constraints, and capacity checks.
+ * Results are paginated and include a total count for client-side pagination controls.</p>
+ */
 @RestController
 @RequestMapping("/api/v1/parches")
 @Tag(name = "Search", description = "Patch search and filtering")
@@ -21,6 +28,11 @@ public class SearchController {
 
     private final SearchPatchesUseCase searchPatchesUseCase;
 
+    /**
+     * Constructs the controller with its required use-case dependency.
+     *
+     * @param searchPatchesUseCase the use case that executes the search query and returns results
+     */
     public SearchController(SearchPatchesUseCase searchPatchesUseCase) {
         this.searchPatchesUseCase = searchPatchesUseCase;
     }
@@ -35,6 +47,17 @@ public class SearchController {
             @ApiResponse(responseCode = "400", description = "Invalid parameter (e.g. 'q' with less than 2 characters)"),
             @ApiResponse(responseCode = "401", description = "Invalid or missing JWT")
     })
+    /**
+     * Executes a dynamic search against the public patch catalogue and returns a paginated result.
+     *
+     * @param userId  optional UUID of the authenticated user; when provided, the response includes
+     *                membership indicators showing whether the user has already joined each patch
+     * @param request the search filter object populated from query parameters
+     *                (keyword, category, campus zone, dates, capacity, etc.)
+     * @param page    zero-based page index (defaults to 0)
+     * @param size    number of items per page (defaults to 20)
+     * @return a 200 response containing a {@link SearchResponse} with results and total count
+     */
     @GetMapping("/search")
     public ResponseEntity<SearchResponse> search(
             @Parameter(description = "ID of the user performing the search (optional, enables membership indicator)")

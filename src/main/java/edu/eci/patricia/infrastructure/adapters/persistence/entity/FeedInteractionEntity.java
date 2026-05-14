@@ -7,6 +7,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity representing a single user interaction with a patch in the {@code feed_interactions} table.
+ *
+ * <p>Each record captures which user performed which action (view, join, or skip) on which patch,
+ * along with the timestamp of the interaction. Records are immutable after insertion.</p>
+ */
 @Entity
 @Table(name = "feed_interactions")
 @Getter
