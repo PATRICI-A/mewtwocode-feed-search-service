@@ -10,6 +10,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object that encapsulates all optional search criteria for the patch search endpoint.
+ * Up to eight combinable predicates are supported: free-text query, category, campus zone, status,
+ * date range, maximum group size, and available-spots filter.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

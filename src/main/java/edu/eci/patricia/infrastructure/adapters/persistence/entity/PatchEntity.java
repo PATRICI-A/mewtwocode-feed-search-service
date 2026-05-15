@@ -9,6 +9,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity representing a patch (study/social group session) stored in the {@code patches} table.
+ *
+ * <p>A patch holds all scheduling, capacity, visibility, and categorisation data for a
+ * user-created event on campus. Default values for {@code currentCount}, {@code status},
+ * and {@code isPublic} are initialised by the {@link #onCreate()} lifecycle callback.</p>
+ */
 @Entity
 @Table(name = "patches")
 @Getter
@@ -65,6 +72,12 @@ public class PatchEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * JPA lifecycle callback invoked before the entity is first persisted.
+     *
+     * <p>Sets {@code createdAt} to the current time and applies default values for
+     * {@code currentCount}, {@code status}, and {@code isPublic} if they have not been set.</p>
+     */
     @PrePersist
     protected void onCreate() {
         if (this.createdAt == null) this.createdAt = LocalDateTime.now();

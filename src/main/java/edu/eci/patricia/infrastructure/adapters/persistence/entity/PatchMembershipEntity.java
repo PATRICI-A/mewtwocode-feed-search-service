@@ -7,6 +7,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * JPA entity representing the membership of a user in a patch, stored in the {@code patch_memberships} table.
+ *
+ * <p>A unique constraint on {@code (patch_id, user_id)} prevents a user from joining the same
+ * patch more than once. The {@code status} field tracks whether the membership is currently active.</p>
+ */
 @Entity
 @Table(name = "patch_memberships", uniqueConstraints = {
         @UniqueConstraint(name = "uk_membership_patch_user", columnNames = {"patch_id", "user_id"})
