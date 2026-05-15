@@ -10,6 +10,7 @@ import edu.eci.patricia.domain.model.enums.PatchStatus;
 import edu.eci.patricia.domain.ports.out.MembershipRepositoryPort;
 import edu.eci.patricia.domain.ports.out.PatchRepositoryPort;
 import edu.eci.patricia.domain.ports.out.PatchWriteRepositoryPort;
+import edu.eci.patricia.infrastructure.external.NotificationFeignClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +33,7 @@ class JoinPatchServiceTest {
     @Mock private PatchRepositoryPort patchRepository;
     @Mock private MembershipRepositoryPort membershipRepository;
     @Mock private PatchWriteRepositoryPort patchWriteRepository;
+    @Mock private NotificationFeignClient notificationFeignClient;
 
     private JoinPatchService service;
 
@@ -40,12 +42,12 @@ class JoinPatchServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new JoinPatchService(patchRepository, membershipRepository, patchWriteRepository);
+        service = new JoinPatchService(patchRepository, membershipRepository, patchWriteRepository, notificationFeignClient);
     }
 
     @Test
     void executeCreaMembresiaEIncrementaCupo() {
-        Patch patch = openPatch(true, 1, 3);
+        Patch patch = openPatch(true, 1);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(patch));
         when(membershipRepository.existsActiveMembership(patchId, userId)).thenReturn(false);
 
@@ -62,7 +64,7 @@ class JoinPatchServiceTest {
 
     @Test
     void executeMarcaFullCuandoLlegaALaCapacidad() {
-        Patch patch = openPatch(true, 2, 3);
+        Patch patch = openPatch(true, 2);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(patch));
         when(membershipRepository.existsActiveMembership(patchId, userId)).thenReturn(false);
 
@@ -83,20 +85,20 @@ class JoinPatchServiceTest {
 
     @Test
     void executeFallaSiPatchPrivadoCerradoLlenoOMiembroExistente() {
-        Patch privatePatch = openPatch(false, 0, 3);
+        Patch privatePatch = openPatch(false, 0);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(privatePatch));
         assertThatThrownBy(() -> service.execute(patchId, userId)).isInstanceOf(BusinessRuleException.class);
 
-        Patch closedPatch = openPatch(true, 0, 3);
+        Patch closedPatch = openPatch(true, 0);
         closedPatch.setStatus(PatchStatus.CLOSED);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(closedPatch));
         assertThatThrownBy(() -> service.execute(patchId, userId)).isInstanceOf(BusinessRuleException.class);
 
-        Patch fullPatch = openPatch(true, 3, 3);
+        Patch fullPatch = openPatch(true, 3);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(fullPatch));
         assertThatThrownBy(() -> service.execute(patchId, userId)).isInstanceOf(PatchFullException.class);
 
-        Patch alreadyMemberPatch = openPatch(true, 1, 3);
+        Patch alreadyMemberPatch = openPatch(true, 1);
         when(patchRepository.findById(patchId)).thenReturn(Optional.of(alreadyMemberPatch));
         when(membershipRepository.existsActiveMembership(patchId, userId)).thenReturn(true);
         assertThatThrownBy(() -> service.execute(patchId, userId)).isInstanceOf(AlreadyMemberException.class);
@@ -104,13 +106,13 @@ class JoinPatchServiceTest {
         verify(patchWriteRepository, never()).saveMembership(org.mockito.ArgumentMatchers.any());
     }
 
-    private Patch openPatch(boolean isPublic, int currentCount, int capacity) {
+    private Patch openPatch(boolean isPublic, int currentCount) {
         return Patch.builder()
                 .id(patchId)
                 .isPublic(isPublic)
                 .status(PatchStatus.OPEN)
                 .currentCount(currentCount)
-                .capacity(capacity)
+                .capacity(3)
                 .build();
     }
 }
