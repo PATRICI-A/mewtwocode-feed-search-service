@@ -258,7 +258,7 @@ Decaimiento exponencial (temporal):
 
 
 
-> 📷 **[Agregar diagrama de componentes específico del módulo si está disponible]**
+![Diagrama componentes](docs/DiagramaComponentes.png)
 
 | Componente | Tipo | Interfaz |
 |---|---|---|

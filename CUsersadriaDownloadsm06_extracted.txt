@@ -1,0 +1,407 @@
+[TABLE START]
+PATRICI.A — EciBuddy | Escuela Colombiana de Ingeniería Julio Garavito | Diseño de Software — DOSW — Mewtwo Code | DOCUMENTO DE ARQUITECTURA DE SOFTWARE | Modulo 06 | Feed y Búsqueda
+[TABLE END]
+[TABLE START]
+Módulo || M06 — Feed y Búsqueda
+Equipo || Mewtwo Code
+Integrantes || Juan David Gomez · Juan Esteban Rodriguez · Adrian Ducuara · Diego Andrade · Diego Rozo
+Entidad || Escuela Colombiana de Ingeniería Julio Garavito · DOSW
+Versión || 1.1 — mayo 2026
+[TABLE END]
+[HEADING:Ttulo1] 1. Descripción del Módulo 
+[TABLE START]
+Campo || Descripción
+Nombre || Feed y Búsqueda
+Código || M06
+Sistema || PATRICI.A — EciBuddy
+Descripción || Permite explorar, buscar y recibir recomendaciones de parches dentro del campus universitario mediante un feed personalizado basado en afinidad, ubicación y actividad del usuario. Es el punto de entrada principal para que un estudiante descubra actividades sociales y se una a ellas.
+Problema que resuelve || La falta de conexiones sociales y redes de apoyo en el campus impacta el rendimiento y la salud mental del estudiante. Este módulo centraliza el descubrimiento de parches eliminando la necesidad de buscar en múltiples canales informales.
+Actores principales || Estudiante autenticado (roles: Capitan, Estudiante)
+[TABLE END]
+[HEADING:Ttulo2] 1.1 Propósito general
+[PARA] El módulo M06 Feed & Búsqueda es el servicio encargado de exponer y personalizar el contenido de "patches" (actividades o eventos del campus) para los usuarios de la plataforma PATRICI.A. Su propósito es proporcionar un feed inteligente y ordenado por afinidad, un motor de búsqueda filtrable con paginación, un sistema de recomendaciones personalizado y un mecanismo de registro de interacciones que retroalimenta continuamente el perfil de intereses de cada usuario.
+[PARA] El módulo opera como un microservicio independiente dentro de la arquitectura de PATRICI.A, recibiendo datos de patches desde su propia base de datos y coordinando con los demás microservicios mediante la propagación de eventos a través de sus contratos de API. 
+[HEADING:Ttulo2] 1.2 Alcance
+[PARA] El módulo M06 comprende:
+[PARA] Servicio de feed personalizado: listado y ordenamiento de patches abiertos y públicos con puntuación de relevancia basada en el perfil de intereses del usuario.
+[PARA] Motor de búsqueda: filtrado dinámico de patches por categoría, zona, campus, fecha y disponibilidad, con paginación y ordenamiento.
+[PARA] Motor de recomendaciones: cálculo de afinidad por categoría con fallback de popularidad para usuarios sin historial.
+[PARA] Registro de interacciones: captura de acciones VIEW, JOIN y SKIP, actualizando el score de afinidad con decaimiento exponencial.
+[PARA] Unión a patches: validación de reglas de negocio y creación de membresía.
+[PARA] Notificaciones push:
+[PARA] No comprende: creación/edición de patches ni gestión de usuarios(responsabilidad de otros módulos).
+[HEADING:Ttulo2] 1.3 Identificador del Módulo
+[TABLE START]
+Atributo || Valor
+Identificador || M06(Modulo 6)
+Nombre || Feed y busqueda
+Nombre Tecnico || mewtwocode-feed-search-service
+Puerto de producción(Docker) || 8080
+Puerto de desarrollo local || 8081
+Versión || 0.0.1-SNAPSHOT
+Framework principal || Spring Boot 3.3.0
+Lenguaje || Java 21
+[TABLE END]
+[HEADING:Ttulo1] 2. Análisis de Tecnologías y Decisiones de Diseño
+[HEADING:Ttulo2] 2.1 Backend
+[TABLE START]
+Tecnología || Versión || Justificación
+Java || 21+ || Versión LTS con Records, Pattern Matching y Virtual Threads. Soporte garantizado hasta 2029.
+Spring Boot || 3.3.0 || Framework de referencia para microservicios Java. Auto-configuración, actuator, métricas y seguridad integrados.
+Spring Security || Boot 3.3 || Autenticación y autorización — validación JWT local por microservicio
+Spring Data JPA || Boot 3.3 || Abstracción del repositorio. Specification Pattern para búsqueda dinámica.
+SpringDoc OpenAPI || 2.5.0 || Generación automática de Swagger UI y contrato OpenAPI 3 desde anotaciones.
+Spring Cloud OpenFeign || Boot 3.3 || Comunicación entre microservicios — cliente HTTP declarativo
+JWT (jjwt) || 0.12.6 || Validación de tokens de autenticación emitidos por M01
+Redis (Spring Cache) || 7.x || Caché de resultados de recomendaciones con TTL de 5 minutos. Activado solo en perfil Docker.x
+Lombok || Última || Reducción de código boilerplate (@Builder, @Data, @Slf4j).
+JaCoCo || Última || Cobertura de código en pruebas unitarias
+[TABLE END]
+[HEADING:Ttulo2] 2.2 Base de Datos
+[TABLE START]
+Tecnología  || Perfil || Uso
+PostgreSQL 15 || Docker/Producción || Base de datos relacional robusta. Soporte para UUID nativo, tipos ENUM e índices parciales. Estándar del proyecto PATRICI.A.
+H2 (en memoria) || Local (desarrollo) || Base de datos embebida para desarrollo local. No requiere Docker. Esquema auto-generado por Hibernate. Script data-local.sql con 7 patches de prueba precargados.
+[TABLE END]
+[PARA] La decisión de usar dos fuentes permite que los desarrolladores ejecuten el microservicio de forma autónoma con ./mvnw spring-boot:run sin dependencias externas, mientras Docker usa PostgreSQL real.
+[HEADING:Ttulo2] 2.3 Infraestructura y Despliegue
+[TABLE START]
+Herramienta || Uso
+Docker || Contenedorización. Build multi-etapa con eclipse-temurin:21-jre-alpine (~85 MB).
+Docker Compose || Orquestación local de M06 + PostgreSQL + Redis en red compartida.
+GitHub Actions || CI/CD: job build-and-test (Maven + JUnit) + job docker-push (build y push a ghcr.io).
+GitHub Container Registry || Registro de imágenes Docker. Imagen: ghcr.io/patrici-a/feed-search-service.
+Redis 7 || Caché de recomendaciones. TTL 5 min. Serialización JSON con GenericJackson2JsonRedisSerializer.
+API Gateway || Enruta el tráfico externo al microservicio M06 (tecnología por confirmar con el equipo)
+[TABLE END]
+[HEADING:Ttulo2] 2.4 Herramientas de Desarrollo
+[TABLE START]
+Herramienta || Proposito
+Maven Wrapper (mvnw) || Build reproducible sin instalar Maven globalmente. Comando: ./mvnw spring-boot:run
+Spring Boot Maven Plugin || Activación automática del perfil local con <profile>local</profile> en pom.xml
+Swagger UI (SpringDoc) || Documentación interactiva en /swagger-ui.html. Configuración de Bearer JWT en SwaggerConfig.
+H2 Console || Acceso a la BD H2 en /h2-console (solo perfil local).
+JUnit 5 + Mockito || Testing unitario de servicios y adaptadores.
+Git / GitHub || Control de versiones — repositorio independiente por microservicio
+[TABLE END]
+[HEADING:Ttulo1] 3. Funcionalidades del Módulo
+[PARA] El módulo M06 cubre cuatro funcionalidades principales.
+[TABLE START]
+ID || Nombre || Actor Principal || Descripción resumida
+RF-17 || Feed personalizado || Estudiante autenticado || Listado de patches OPEN y públicos ordenados por puntuación de afinidad. La puntuación combina el score de interés por categoría (peso 50%) y la proximidad temporal del patch (peso hasta 20%). Soporta filtros opcionales por categoría, zona de campus y fecha.
+RF-18 || Búsqueda y Filtrado || Estudiante autenticado || Motor de búsqueda con predicados dinámicos (Specification Pattern). Combina hasta 8 criterios: keyword, categoría, campus zone, capacidad mínima/máxima, rango de fechas, estado. Respuesta paginada con total de resultados.
+RF-19 || Recomendación de Parches || Sistema / Estudiante || Hasta 10 patches recomendados ordenados por afinidad de categoría. Si el usuario no tiene historial, activa fallback de popularidad (top patches por currentCount con score fijo de 0.30).
+RF-09 (parcial) || Unirse desde el Feed || Estudiante autenticado || Valida 5 reglas de negocio secuenciales antes de crear la membresía: patch existe, patch está OPEN, patch es público, usuario no es ya miembro, patch no está a capacidad máxima.
+ || Registro de interacción || Estudiante / Sistema || Captura la acción del usuario sobre un patch (VIEW, JOIN, SKIP) y actualiza el score de afinidad de la categoría correspondiente. Aplica decaimiento exponencial (λ=0.01) sobre el historial acumulado.
+[TABLE END]
+[HEADING:Ttulo1] 4. Modelo de Datos
+[PARA] M06 es dueño de las tablas feed_interactions y search_index. Los datos de patches (M02) y user_interests (M03) se consumen exclusivamente a través de Feign Clients — M06 nunca accede directamente a la BD de otro microservicio.
+[HEADING:Ttulo2] 4.1 Entidades y Tablas
+[PARA] Tabla: patches
+[TABLE START]
+Columna || Tipo || Restricciones || Descripción
+id || UUID || PK || Identificador único del patch
+title || VARCHAR(150) || NOT NULL || Título del patch
+description || TEXT ||  || Descripción detallada
+category || VARCHAR(50) || NOT NULL || Enum: SPORTS, MUSIC, STUDY, FOOD, ART, GAMES, SOCIAL, OTHER
+location || VARCHAR(200) ||  || Ubicación física del patch
+campus_zone || VARCHAR(50) ||  || Enum: CANCHA, BIBLIOTECA, CAFETERIA, AUDITORIO, LABORATORIO, PARQUE, SALON, OTRO
+start_time || TIMESTAMP ||  || Fecha y hora de inicio
+end_time || TIMESTAMP ||  || Fecha y hora de fin
+capacity || INT || NOT NULL || Cupo máximo de participantes
+current_count || INT || DEFAULT 0 || Cantidad actual de participantes
+status || VARCHAR(20) || NOT NULL || Enum: OPEN, CLOSED, CANCELLED
+is_public || BOOLEAN || DEFAULT true || Visibilidad del patch
+creator_id || UUID || NOT NULL || ID del usuario creador (referencia a M01)
+created_at || TIMESTAMP || DEFAULT NOW() || Fecha de creación del registro
+[TABLE END]
+[PARA] Tabla: feed_interactions
+[TABLE START]
+Columna || Tipo || Restricciones || Descripción
+id || UUID || PK || Identificador de la interacción
+user_id || UUID || NOT NULL || ID del usuario que interactuó
+patch_id || UUID || NOT NULL, FK → patches || Patch sobre el que se interactuó
+action || VARCHAR(10) || NOT NULL || Enum: VIEW, JOIN, SKIP
+interacted_at || TIMESTAMP || NOT NULL || Momento exacto de la interacción
+[TABLE END]
+[PARA] Tabla: user_category_scores
+[TABLE START]
+Columna || Tipo || Restricciones || Descripción
+id || UUID || PK || Identificador del registro
+user_id || UUID || NOT NULL || ID del usuario
+category || VARCHAR(50) || NOT NULL || Categoría del patch
+score_total || FLOAT || NOT NULL || Puntuación acumulada con decaimiento (rango [0, 100])
+last_updated || TIMESTAMP || NOT NULL || Última vez que se actualizó el score
+[TABLE END]
+[PARA] Tabla patch_memberships
+[TABLE START]
+Columna || Tipo || Restricciones || Descripción
+id || UUID || PK || Identificador de la membresía
+patch_id || UUID || NOT NULL, FK → patches || Patch al que pertenece la membresía
+user_id || UUID || NOT NULL || Usuario que se unió
+joined_at || TIMESTAMP || NOT NULL || Fecha de unión
+status || VARCHAR(20) || DEFAULT ACTIVE || Estado: ACTIVE, CANCELLED
+[TABLE END]
+[HEADING:Ttulo2] 4.2 Explicación del Modelo
+[PARA] patches es la entidad central del módulo. El campo current_count se actualiza cada vez que un usuario se une o cancela su membresía, permitiendo consultas de disponibilidad O(1).
+[PARA] feed_interactions es el registro de auditoría de comportamiento del usuario. Cada acción (ver, unirse, saltar) se persiste con su timestamp, lo que permite análisis temporales.
+[PARA] user_category_scores es el perfil de intereses cuantificado del usuario. El score_total por categoría se actualiza después de cada interacción con la fórmula:S_nuevo = clamp( S × e^(−0.01 × días) + peso_evento , 0, 100 )donde λ = 0.01 reduce a la mitad el score en ~69 días de inactividad. Pesos: VIEW=+0.1, JOIN=+1.0, SKIP=−10.0.
+[PARA] patch_memberships registra la participación formal del usuario en un patch. Consultada por FeedService para marcar patches como "joined" en el response del feed.
+[HEADING:Ttulo1] 5. Diagrama de Clases
+[HEADING:Ttulo2] 5.1 Planteamiento de la Arquitectura Utilizada
+[PARA] El módulo M06 aplica Hexagonal Architecture (Ports & Adapters), organizando el código en tres zonas concéntricas: Dominio (núcleo), Aplicación (casos de uso) e Infraestructura (adaptadores).
+[PARA] Patrones de diseño identificados:
+[TABLE START]
+Patrón || Ubicación || Descripción
+Ports & Adapters (Hexagonal) || Toda la arquitectura || Los puertos de entrada (FeedUseCase, RegisterInteractionPort, etc.) y de salida (PatchRepositoryPort, FeedInteractionRepositoryPort, etc.) son interfaces. Los adaptadores concretos están en infraestructura.
+Strategy || FeedService, RecommendationService || El algoritmo de puntuación varía entre feed (temporalScore + categoryScore) y recomendaciones (afinidad pura + fallback de popularidad). Intercambiables sin modificar los clientes.
+Specification || PatchSpecification || Combina dinámicamente hasta 8 predicados de búsqueda con operadores AND. Encapsula los criterios de búsqueda en objetos Specification reutilizables.
+Adapter (GoF) || Capa de infraestructura || Cada clase *RepositoryAdapter adapta la interfaz JPA a los puertos de dominio.
+Value Object || ScoredPatch || Objeto inmutable @Builder que encapsula un Patch con affinityScore y reason. Sin identidad propia.
+Builder || Entidades y modelos || Lombok @Builder en todas las entidades y modelos de dominio.
+Decorator implícito || RedisConfig + @Cacheable || La capa de caché en Redis decora transparentemente el servicio de recomendaciones sin modificar su lógica.
+[TABLE END]
+[HEADING:Ttulo2] 5.2  Diagrama de Clases por Capas
+[PARA] Capa de Dominio – domain/
+[TABLE START]
+Clase / Interfaz || Tipo || Responsabilidad
+Patch || Model || Entidad de dominio con todos los atributos de un patch del campus
+FeedInteraction || Model || Registro de interacción usuario-patch con tipo de acción y timestamp
+UserCategoryScore || Model || Score de afinidad por categoría con timestamp de actualización
+ScoredPatch || Value Object || Patch inmutable enriquecido con affinityScore y reason
+PatchCategory || Enum || SPORTS, MUSIC, STUDY, FOOD, ART, GAMES, SOCIAL, OTHER
+PatchStatus || Enum || OPEN, CLOSED, CANCELLED
+InteractionType || Enum || VIEW, JOIN, SKIP
+CampusZone || Enum || CANCHA, BIBLIOTECA, CAFETERIA, AUDITORIO, LABORATORIO, PARQUE, SALON, OTRO
+FeedUseCase || Port In || execute(userId, filters, page, size): List<PatchSummaryResponse>
+RegisterInteractionPort || Port In || register(userId, patchId, action): void
+GetRecommendationsPort || Port In || getRecommendations(userId): List<ScoredPatch>
+JoinPatchPort || Port In || join(userId, patchId): void
+PatchRepositoryPort || Port Out || findOpenPublicPatches(), findByIds(), findById(), searchPatches(), findPopularPatches()
+FeedInteractionRepositoryPort || Port Out || findByUserId(), findJoinedPatchIds(), save()
+UserCategoryScoreRepositoryPort || Port Out || findByUserId(), findByUserIdAndCategory(), save()
+MembershipRepositoryPort || Port Out || existsActiveMembership(), save(), incrementCurrentCount()
+PatchNotFoundException || Exception || Patch no existe → HTTP 404
+BusinessRuleException || Exception || Regla de negocio violada → HTTP 422
+ServiceUnavailableException || Exception || Servicio externo caído → HTTP 503
+[TABLE END]
+[PARA] Capa de Aplicación – application/
+[TABLE START]
+Clase || Implementa || Responsabilidad
+FeedService || FeedUseCase || Orquesta el feed: carga patches, calcula scoreRelevance() y temporalScore(), aplica filtros y pagina resultados.
+RegisterInteractionService || RegisterInteractionPort || Persiste la interacción y actualiza UserCategoryScore con decaimiento exponencial.
+RecommendationService || GetRecommendationsPort || Calcula afinidad por categoría. Usa popularFallback() si no hay historial del usuario.
+JoinPatchService || JoinPatchPort || Valida 5 reglas de negocio y crea la membresía. Incrementa current_count.
+SearchService || SearchUseCase || Delega la búsqueda al repositorio usando Specification Pattern. Retorna resultado paginado.
+[TABLE END]
+[PARA] Capa de infraestructura – infrastructure/
+[TABLE START]
+Clase || Capa || Responsabilidad
+FeedController || Controller || GET /api/v1/feed/parches, POST /api/v1/feed/interact
+SearchController || Controller || GET /api/v1/parches/search
+RecommendationController || Controller || GET /api/v1/feed/recommended
+JoinPatchController || Controller || POST /api/v1/feed/{id}/join
+GlobalExceptionHandler || Advice || Mapea 5 tipos de excepción a respuestas HTTP estandarizadas
+PatchRepositoryAdapter || Adapter || Implementa PatchRepositoryPort delegando a PatchJpaRepository
+FeedInteractionRepositoryAdapter || Adapter || Implementa FeedInteractionRepositoryPort delegando a FeedInteractionJpaRepository
+PatchSpecification || Specification || Construye Specification<PatchEntity> con hasta 8 predicados combinables
+SecurityConfig || Config || JWT stateless con NimbusJwtDecoder HMAC-SHA256. anyRequest().permitAll()
+RedisConfig || Config || @Profile("docker"). RedisCacheManager con TTL 5 min, serialización JSON
+SwaggerConfig || Config || OpenAPI 3 con Bearer JWT security scheme
+[TABLE END]
+[HEADING:Ttulo1] 6. Arquitectura Utilizada
+[HEADING:Ttulo2] 6.1 Tipo de Arquitectura
+[PARA] El módulo M06 implementa Arquitectura Hexagonal (Ports & Adapters), propuesta por Alistair Cockburn. Divide la aplicación en:
+[PARA] Interior (Dominio + Aplicación): lógica de negocio pura. Sin dependencias hacia frameworks, BD ni protocolo de comunicación.
+[PARA] Exterior (Infraestructura): adaptadores concretos que conectan el núcleo con el mundo exterior (HTTP, JPA, Redis).
+[PARA] Puertos: interfaces que definen los contratos entre interior y exterior. Puertos de entrada (driving) son invocados por el exterior; de salida (driven) son invocados por el interior.
+[PARA] Beneficios obtenidos:
+[PARA] Testabilidad: servicios probados con mocks de puertos, sin BD real.
+[PARA] Intercambiabilidad: cambio de PostgreSQL a H2 solo modifica el adaptador.
+[PARA] Claridad de responsabilidades: cada clase tiene una sola razón para cambiar (SRP).
+[PARA] Independencia de frameworks: FeedService, RegisterInteractionService, etc. no importan ninguna clase de Spring.
+[HEADING:Ttulo2] 6.2 Capas y Paquetes
+[TABLE START]
+Capa || Paquete raíz || Componentes de M06
+Dominio || domain/ || Modelos, Enums, Puertos In/Out, Excepciones de dominio, Value Objects
+Aplicación || application/ || Servicios, DTOs de request/response, Mappers de dominio
+Infraestructura || infrastructure/ || Adaptadores de persistencia, Repositorios JPA, Entidades JPA, Mappers de entidad, Configuraciones
+Entrypoints || entrypoints/ || Controladores REST, GlobalExceptionHandler
+[TABLE END]
+[HEADING:Ttulo2] 6.3 Estructura de Paquetes
+[PARA] edu.eci.patricia├── domain/│   ├── model/│   │   ├── Patch.java│   │   ├── FeedInteraction.java│   │   ├── UserCategoryScore.java│   │   └── enums/ (PatchCategory, PatchStatus, InteractionType, CampusZone)│   ├── ports/│   │   ├── in/ (FeedUseCase, RegisterInteractionPort, GetRecommendationsPort, JoinPatchPort)│   │   └── out/ (PatchRepositoryPort, FeedInteractionRepositoryPort,│   │             MembershipRepositoryPort, UserCategoryScoreRepositoryPort)│   ├── exceptions/ (PatchNotFoundException, BusinessRuleException, ServiceUnavailableException)│   └── valueobjects/ (ScoredPatch)├── application/│   ├── service/ (FeedService, RegisterInteractionService, RecommendationService,│   │             JoinPatchService, SearchService)│   ├── dto/│   │   ├── request/ (FeedFilterRequest, SearchRequest, InteractionRequest)│   │   └── response/ (PatchSummaryResponse, SearchResponse)│   └── mapper/ (PatchDomainMapper)├── infrastructure/│   ├── adapters/│   │   ├── adapter/ (PatchRepositoryAdapter, FeedInteractionRepositoryAdapter,│   │   │             MembershipRepositoryAdapter, UserCategoryScoreRepositoryAdapter)│   │   └── persistence/│   │       ├── entity/ (PatchEntity, FeedInteractionEntity,│   │       │            PatchMembershipEntity, UserCategoryScoreEntity)│   │       ├── repository/ (PatchJpaRepository, FeedInteractionJpaRepository, ...)│   │       ├── mapper/ (PatchEntityMapper)│   │       └── PatchSpecification.java│   └── config/ (SecurityConfig, RedisConfig, SwaggerConfig)└── entrypoints/    ├── controller/ (FeedController, SearchController,    │               RecommendationController, JoinPatchController)    └── advice/ (GlobalExceptionHandler)
+[HEADING:Ttulo1] 7. Diagrama de Componentes
+[TABLE START]
+Componente || Tipo || Descripción || Interfaces expuestas
+FeedController || REST Controller || Punto de entrada HTTP para el feed y las interacciones || GET /api/v1/feed/parches, POST /api/v1/feed/interact
+SearchController || REST Controller || Punto de entrada HTTP para búsqueda paginada || GET /api/v1/parches/search
+RecommendationController || REST Controller || Punto de entrada HTTP para recomendaciones || GET /api/v1/feed/recommended
+JoinPatchController || REST Controller || Punto de entrada HTTP para unirse a un patch || POST /api/v1/feed/{id}/join
+FeedService || Application Service || Lógica del feed personalizado con scoring || FeedUseCase (Port In)
+RegisterInteractionService || Application Service || Actualiza el perfil de intereses con decaimiento || RegisterInteractionPort (Port In)
+RecommendationService || Application Service || Genera recomendaciones con caché Redis || GetRecommendationsPort (Port In)
+JoinPatchService || Application Service || Valida reglas de negocio y crea membresía || JoinPatchPort (Port In)
+PatchRepositoryAdapter || Adapter || Adapta JPA al puerto de dominio de patches || PatchRepositoryPort (Port Out)
+PatchSpecification || Specification || Construye predicados JPA dinámicos para búsqueda || Specification<PatchEntity>
+PostgreSQL / H2 || Data Store || Base de datos relacional (Docker / Local) || JDBC
+Redis || Cache || Caché de recomendaciones con TTL 5 min (solo Docker) || Spring Cache @Cacheable
+[TABLE END]
+[PARA] Conexión con otros módulos:
+[TABLE START]
+Módulo Externo || Tipo de dependencia || Dirección || Datos compartidos
+M01 – Autenticación || JWT token validation || M01 -> M06 || JWT firmado por M01, validado por SecurityConfig de M06 mediante clave HMAC-SHA256 compartida
+M02 – Gestión de Patches ||  ||  || M06 lee la tabla patches poblada por M02. M06 no crea ni modifica patches.
+M03 – Gestión de Usuarios || Referencias por UUID || Implícita  || M06 almacena creator_id y user_id como UUID. No llama directamente a M03.
+[TABLE END]
+[HEADING:Ttulo1] 8. Diagrama de Despliegue
+[TABLE START]
+Nodo || Tecnología || Puerto || Rol
+feed-search-service || Docker (eclipse-temurin:21-jre-alpine) || 8080 || Microservicio M06 contenedorizado
+postgres || PostgreSQL 15 (imagen oficial) || 5432 || Base de datos relacional en red Docker interna
+redis || Redis 7 (imagen oficial) || 6379 || Caché de recomendaciones en red Docker interna
+GitHub Actions Runner || ubuntu-latest || N/A || Ejecuta pipeline CI/CD
+ghcr.io || GitHub Container Registry || N/A || Registro de imágenes Docker
+Servidor destino || Docker Compose || N/A || Orquesta todos los servicios
+[TABLE END]
+[PARA] Dockerfile multi-etapa:
+[PARA] Etapa 1 (build): maven:3.9-eclipse-temurin-21 — descarga dependencias y compila el JAR.
+[PARA] Etapa 2 (runtime): eclipse-temurin:21-jre-alpine — imagen mínima ~85 MB. Solo JRE + JAR.
+[PARA] Pipeline CI/CD:
+[PARA] Job 1 build-and-test: checkout → setup JDK 21 → mvn verify. Se ejecuta en cada push y PR.
+[PARA] Job 2 docker-push: depende de build-and-test. Construye imagen y publica en ghcr.io.
+[HEADING:Ttulo1] 9. Funcionalidades Expuestas (API REST)
+[PARA] Prefijo base: /api/feed. Autenticación: Bearer Token JWT en el encabezado Authorization. Todos los endpoints requieren autenticación.
+[HEADING:Ttulo2] 9.1 Resumen de Endpoints
+[TABLE START]
+Método || Endpoint || Descripción
+GET || /api/v1/feed/parches || Lista paginada de patches ordenados por afinidad. Requiere userId. Filtros opcionales: category, campusZone, dateFrom, page, size.
+POST || /api/v1/feed/interact || Registra acción VIEW/JOIN/SKIP y actualiza perfil del usuario.
+GET || /api/v1/parches/search || Búsqueda paginada con hasta 8 filtros combinables. Devuelve SearchResponse con lista y total.
+GET || /api/v1/feed/recommended || Hasta 10 patches por afinidad. Resultado cacheado 5 min en Redis (perfil Docker).
+POST || /api/v1/feed/{id}/join || Une al usuario al patch tras validar 5 reglas de negocio. Incrementa current_count.
+[TABLE END]
+[HEADING:Ttulo2] 9.2 PatchSummaryResponse — Campos del Response
+[TABLE START]
+Campo || Tipo || Descripción
+id || UUID || Identificador único del parche
+title || String || Nombre del parche (máx. 80 caracteres)
+description || String || Descripción breve (máx. 300 caracteres)
+category || Enum || STUDY · SPORTS · CULTURE · GAMING · FOOD · OTHER
+campusZone || Enum || BIBLIOTECA · CAFETERIA · CANCHA · SALON · PARQUEADERO · EXTERNO
+startTime || DateTime ISO || Fecha y hora de inicio del parche
+capacity || Integer || Cupo total del parche
+currentCount || Integer || Número de participantes actuales
+status || Enum || OPEN · FULL · CLOSED · CANCELLED
+isPublic || Boolean || true = parche visible en el feed general
+creatorName || String || Nombre del creador (obtenido M02)
+affinityScore || Float (0.0-1.0) || Puntuación de afinidad. Solo en endpoints de feed personalizado y recomendaciones.
+userIsMember || Boolean || true si el usuario autenticado ya es miembro del parche
+[TABLE END]
+[HEADING:Ttulo2] 9.3 Parámetros de Búsqueda — GET /api/feed/search
+[TABLE START]
+Parámetro || Tipo || Obligatorio || Descripción
+q || String || No || Búsqueda libre en título y descripción (LIKE %keyword%)
+category || PatchCategory || No || Filtro por categoría exacta
+campusZone || CampusZone || No || Filtro por zona del campus
+minCapacity || Integer || No || Cupo mínimo requerido
+maxCapacity || Integer || No || Cupo máximo requerido
+dateFrom || LocalDate || No || Fecha de inicio mínima (inclusive)
+dateTo || LocalDate || No || Fecha de inicio máxima (inclusive)
+status || PatchStatus || No || Estado del patch (por defecto OPEN)
+page || Integer || No || Número de página (base 0, default 0)
+[TABLE END]
+[PARA] Response: SearchResponse { List<PatchSummaryResponse> content, long total, int page, int size }
+[HEADING:Ttulo2] 9.4 Diagramas de Secuencia por Endpoint
+[HEADING:Ttulo3] 9.4.1 GET /api/v1/feed/
+[HEADING:Ttulo3] 9.4.2 POST /api/v1/feed/interact
+[HEADING:Ttulo3] 9.4.3 GET /api/v1/parches/search
+[HEADING:Ttulo3] 9.4.4  GET /api/v1/feed/recommended
+[HEADING:Ttulo3] 9.4.5 POST /api/v1/feed/{id}/join
+[HEADING:Ttulo1] 10. Manejo de Errores
+[HEADING:Ttulo2] 10.1 Estrategia de Manejo de Excepciones
+[PARA] El módulo centraliza el manejo de errores en GlobalExceptionHandler (@RestControllerAdvice). Intercepta excepciones de cualquier capa y las convierte en respuestas HTTP con formato estandarizado:
+[PARA] {
+[PARA]   "error":   "ERROR_TYPE",
+[PARA]   "message": "Descripción legible del error",
+[PARA]   "status":  422
+[PARA] }
+[PARA] El patrón: cada regla de negocio lanza una excepción específica del dominio (sin conocimiento de HTTP), y el handler centralizado la traduce al código HTTP apropiado. El dominio queda libre de dependencias hacia frameworks web.
+[HEADING:Ttulo2] 10.2 Códigos  HTTP Utilizados
+[TABLE START]
+Código HTTP || Significado || Cuándo se usa
+200 OK || Éxito || GET exitoso: feed, búsqueda, recomendaciones
+204 No Content || Éxito sin cuerpo || POST exitoso: interacción registrada, patch unido
+400 Bad Request || Error de validación || MethodArgumentNotValidException: campos obligatorios faltantes o formato inválido
+404 Not Found || Recurso no encontrado || PatchNotFoundException: patch con el ID dado no existe
+422 Unprocessable Entity || Regla de negocio violada || BusinessRuleException: patch cerrado, usuario ya miembro, capacidad llena, patch privado
+503 Service Unavailable || Servicio externo caído || ServiceUnavailableException: fallo en dependencia externa
+500 Internal Server Error || Error inesperado || Exception genérica: error no anticipado en el servidor
+[TABLE END]
+[PARA] 10.3 Tablas de Mensajes por escenario
+[PARA] Feed -  GET /api/v1/feed/parches 
+[TABLE START]
+Condición || Excepción || HTTP || Mensaje
+userId no proporcionado || MethodArgumentNotValidException || 400 || "userId: must not be null"
+userId con formato inválido || MethodArgumentNotValidException || 400 || "userId: invalid UUID format"
+Error interno de BD || Exception || 500 || "Unexpected server error"
+[TABLE END]
+[PARA] Unirse a Patch — POST /api/v1/feed/{id}/join
+[TABLE START]
+Condición || Excepción || HTTP || Mensaje
+Patch no existe || PatchNotFoundException || 404 || "Patch {id} not found"
+Patch no está OPEN || BusinessRuleException || 422 || "Patch is not open for joining"
+Patch es privado || BusinessRuleException || 422 || "Patch is not public"
+Usuario ya es miembro || BusinessRuleException || 422 || "User is already a member of this patch"
+Patch a capacidad máxima || BusinessRuleException || 422 || "Patch has reached maximum capacity"
+[TABLE END]
+[PARA] Búsqueda — GET /api/v1/parches/search
+[TABLE START]
+Condición || Excepción || HTTP || Mensaje
+Valor de enum inválido || MethodArgumentNotValidException || 400 || "category: invalid value"
+page o size negativos || MethodArgumentNotValidException || 400 || "page: must be >= 0"
+Error interno || Exception || 500 || "Unexpected server error"
+[TABLE END]
+[PARA] Registro de Interacción — POST /api/v1/feed/interact
+[TABLE START]
+Condición || Excepción || HTTP || Mensaje
+action inválido || MethodArgumentNotValidException || 400 || "action: must be one of VIEW, JOIN, SKIP"
+patchId no encontrado al actualizar score || Ignorado silenciosamente || N/A || El servicio hace early return sin error
+Error interno || Exception || 500 || "Unexpected server error"
+[TABLE END]
+[HEADING:Ttulo1] 11. Requisitos No Funcionales
+[TABLE START]
+ID || Categoría || Requisito || Implementación
+RNF01 || Rendimiento || El endpoint de feed debe responder en < 500 ms para páginas de hasta 50 resultados || Paginación en BD. Carga lazy de scores por userId. Redis cache para recomendaciones.
+RNF02 || Disponibilidad || Redis no debe ser punto de fallo único || @ConditionalOnBean(RedisConnectionFactory.class). Si Redis no está disponible, el servicio opera sin caché.
+RNF03 || Seguridad || Todas las rutas deben validar JWT || Spring Security + NimbusJwtDecoder HMAC-SHA256.
+RNF05 || Escalabilidad || El servicio debe ser stateless para escalar horizontalmente || JWT stateless. Redis como caché compartida. Sin sesiones en memoria.
+[TABLE END]
+[HEADING:Ttulo1] 12. Dependencia de Otros Módulos
+[TABLE START]
+Módulo || Dato que consume/produce || Dirección || RF asociados || Tipo de acoplamiento
+M01 — Autenticación || userId y rol extraídos del JWT. M06 nunca llama a M01 directamente. || M01 → M06 (JWT compartido) || RF03, RF27 || Alto — clave HMAC-SHA256 debe ser idéntica en ambos módulos
+M02 — Parches || Lee tabla patches para feed, búsqueda y recomendaciones. Ejecuta join() sobre el parche cuando el usuario se une desde el feed. || M02 ↔ M06 (BD compartida o API) || RF08, RF09.1, RF14, RF15, RF16 || Medio — cambios de esquema en M02 impactan directamente a M06
+M03 — Perfil || Lee user_interests (tags/categorías del usuario) para calcular score de afinidad. Peso: 40% del motor de recomendación (RF16). || M03 → M06 (API o BD) || RF02.3, RF16, RF25, RF26 || Medio — si M03 no responde, score de afinidad cae a 0 y se activa fallback de popularidad
+M04 — Geolocalización || Lee ubicación actual del usuario para calcular score de proximidad de parches cercanos. Peso: 30% del feed (RF09.5 — parches cercanos). || M04 → M06 (API por request) || RF06, RF09.5, RF14, RF15 || Medio-Bajo — si M04 no responde, M06 omite componente de proximidad y ordena solo por afinidad + temporalidad
+M05 — Notificaciones || M06 produce un evento a M05 cuando un usuario se une a un parche desde el feed → M05 notifica al capitán: "Nuevo participante en tu parche". M06 no consume notificaciones. || M06 → M05 (llamada outbound) || RF09.1, RF12 || Bajo — llamada asíncrona o event-driven. Fallo de M05 no bloquea el join.
+M07 — Conexiones || Lee conexiones activas del usuario (amigos/conexiones en la plataforma) para calcular si hay conexiones dentro de un parche. Peso: 30% del motor de recomendación (RF16). || M07 → M06 (API o BD) || RF07, RF16, RF31 || Bajo-Medio — si M07 no responde, se omite componente social del score
+[TABLE END]
+[HEADING:Ttulo1] 13. Fuentes Bibliográficas
+[PARA] • Cockburn, A. (2005). Hexagonal Architecture. alistair.cockburn.us.
+[PARA] Spring Boot Reference Documentation 3.3. (2024). https://docs.spring.io/spring-boot/
+[PARA] Spring Data JPA Reference Documentation. (2024). https://docs.spring.io/spring-data/jpa/
+[PARA] Spring Security Reference Documentation. (2024). https://docs.spring.io/spring-security/
+[PARA] SpringDoc OpenAPI 3 Documentation. (2024). https://springdoc.org/
+[PARA] Redis Documentation. (2024). https://redis.io/docs/
+[PARA] Docker Documentation — Multi-stage builds. (2024). https://docs.docker.com/build/building/multi-stage/
+[PARA] GitHub Actions Documentation. (2024). https://docs.github.com/en/actions
+[PARA] H2 Database Engine Documentation. (2024). https://h2database.com/html/main.html
+[PARA] Evans, E. (2003). Domain-Driven Design: Tackling Complexity in the Heart of Software. Addison-Wesley.
+[PARA] Gamma, E., Helm, R., Johnson, R., & Vlissides, J. (1994). Design Patterns: Elements of Reusable Object-Oriented Software. Addison-Wesley.
+[PARA] Fowler, M. (2002). Patterns of Enterprise Application Architecture. Addison-Wesley.
+[HEADING:Ttulo1] 14. Historial de Revisión
+[TABLE START]
+Versión || Fecha || Autor || Descripción
+1.0 || Abril 2026 || Mewtwo Code || Creación inicial del documento de arquitectura del módulo M06
+1.1 || Mayo 2026 || Mewtwo Code – Adrian Ducuara || Reestructuración de documento, con índice correcto
+[TABLE END]
